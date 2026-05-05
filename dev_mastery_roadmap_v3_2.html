@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dev Mastery Roadmap v3</title>
+<style>
+:root{
+  --font-mono:'SF Mono','Fira Code','Cascadia Code',monospace;
+  --color-text-primary:#1a1a1a;
+  --color-text-secondary:#555;
+  --color-text-tertiary:#999;
+  --color-background-primary:#ffffff;
+  --color-background-secondary:#f5f5f4;
+  --color-border-primary:#bbb;
+  --color-border-secondary:#ddd;
+  --color-border-tertiary:#e8e8e8;
+  --border-radius-md:8px;
+  --border-radius-lg:10px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-mono);background:#f9f9f8;min-height:100vh;padding:1.5rem}
+.rm-wrap{padding:1rem 0}
+.rm-title{font-size:22px;font-weight:500;color:var(--color-text-primary);letter-spacing:-0.5px}
+.rm-sub{font-size:13px;color:var(--color-text-secondary);margin-top:4px;margin-bottom:1.2rem}
+.filter-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1.2rem;align-items:center}
+.filter-btn{font-size:11px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:20px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-secondary);font-family:var(--font-mono);transition:all 0.15s}
+.filter-btn.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.phase-block{margin-bottom:2rem}
+.phase-label{font-size:11px;font-weight:500;color:var(--color-text-secondary);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.75rem;padding-left:2px;display:flex;align-items:center;gap:8px}
+.phase-line{flex:1;height:0.5px;background:var(--color-border-tertiary)}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;cursor:pointer;transition:border-color 0.15s}
+.card:hover{border-color:var(--color-border-primary)}
+.card.open{border-color:var(--color-border-primary);background:var(--color-background-secondary)}
+.card-emoji{font-size:16px;margin-bottom:6px}
+.card-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.card-type{font-size:10px;color:var(--color-text-tertiary);margin-top:2px}
+.card-days{font-size:10px;color:var(--color-text-secondary);margin-top:4px;padding:2px 6px;background:var(--color-background-secondary);border-radius:4px;display:inline-block}
+.card-roles{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}
+.role-tag{font-size:9px;padding:2px 5px;border-radius:3px;font-family:var(--font-mono)}
+.tag-be{background:#E6F1FB;color:#0C447C}.tag-fe{background:#E1F5EE;color:#085041}
+.tag-fs{background:#FAEEDA;color:#633806}.tag-do{background:#FCEBEB;color:#791F1F}
+.tag-ml{background:#EEEDFE;color:#3C3489}.tag-mo{background:#FAECE7;color:#712B13}
+.tag-sa{background:#EAF3DE;color:#27500A}.tag-all{background:#F1EFE8;color:#444441}
+.detail-panel{margin-top:8px;grid-column:1/-1;background:var(--color-background-primary);border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:1.25rem;display:none}
+.detail-panel.open{display:block}
+.dp-tabs{display:flex;gap:4px;margin-bottom:1rem;flex-wrap:wrap}
+.dp-tab{font-size:11px;padding:4px 10px;border:0.5px solid var(--color-border-secondary);border-radius:20px;cursor:pointer;background:var(--color-background-secondary);color:var(--color-text-secondary);font-family:var(--font-mono);transition:all 0.1s}
+.dp-tab.active{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
+.dp-pane{display:none}.dp-pane.active{display:block}
+.dp-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.dp-section{margin-bottom:1rem}.dp-section:last-child{margin-bottom:0}
+.dp-h{font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;border-bottom:0.5px solid var(--color-border-tertiary);padding-bottom:4px}
+.dp-links a{display:block;font-size:12px;color:#185FA5;text-decoration:none;padding:3px 0;line-height:1.5}
+.dp-links a:hover{text-decoration:underline}
+.dp-links a::before{content:"↗ ";font-size:10px;opacity:0.6}
+.concept-list{display:flex;flex-wrap:wrap;gap:4px}
+.concept{font-size:11px;padding:3px 7px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:4px;color:var(--color-text-secondary)}
+.concept.adv{border-color:#AFA9EC;color:#3C3489}
+.project-item{font-size:12px;color:var(--color-text-primary);padding:5px 0;border-bottom:0.5px solid var(--color-border-tertiary);line-height:1.5}
+.project-item:last-child{border-bottom:none}
+.proj-label{font-size:10px;font-weight:500;margin-right:5px;padding:1px 5px;border-radius:3px}
+.pl-mini{background:#C0DD97;color:#27500A}.pl-major{background:#B5D4F4;color:#0C447C}.pl-excl{background:#F5C4B3;color:#712B13}
+.ref-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 12px;margin-bottom:8px}
+.ref-card:last-child{margin-bottom:0}
+.ref-title{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px}
+.ref-title a{color:#185FA5;text-decoration:none}
+.ref-title a:hover{text-decoration:underline}
+.ref-desc{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+.ref-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.ref-tag{font-size:10px;padding:1px 6px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:3px;color:var(--color-text-tertiary)}
+.tag-ct{background:#FDE8F6;color:#7A1260}
+.cert-badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:3px;margin:2px;font-weight:500}
+.cb-free{background:#C0DD97;color:#1E5E00}
+.cb-paid{background:#B5D4F4;color:#0C447C}
+.cb-top{background:#F5C4B3;color:#712B13}
+.cert-item{padding:6px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:12px;line-height:1.6}
+.cert-item:last-child{border-bottom:none}
+.close-btn{float:right;font-size:12px;color:var(--color-text-secondary);cursor:pointer;padding:2px 6px;border:0.5px solid var(--color-border-tertiary);border-radius:4px;background:var(--color-background-secondary)}
+.close-btn:hover{color:var(--color-text-primary)}
+.dp-fullwidth{grid-column:1/-1}
+@media(max-width:500px){.dp-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="rm-wrap" style="max-width:900px;margin:0 auto">
+<div class="rm-title">Dev Mastery Roadmap v3</div>
+<div class="rm-sub">Click any card to explore resources, projects, repos & certifications to pursue</div>
+
+<div class="filter-row" id="roleFilters">
+<span style="font-size:11px;color:var(--color-text-secondary);padding:4px 2px">Role:</span>
+<button class="filter-btn active" data-role="all">All</button>
+<button class="filter-btn" data-role="be">Backend</button>
+<button class="filter-btn" data-role="fe">Frontend</button>
+<button class="filter-btn" data-role="fs">Full Stack</button>
+<button class="filter-btn" data-role="do">DevOps</button>
+<button class="filter-btn" data-role="ml">AI/ML</button>
+<button class="filter-btn" data-role="mo">Mobile</button>
+<button class="filter-btn" data-role="sa">Sysadmin</button>
+</div>
+
+<div id="roadmapRoot"></div>
+</div>
+
+<script>
+const RL={all:"All",be:"Backend",fe:"Frontend",fs:"Full Stack",do:"DevOps",ml:"AI/ML",mo:"Mobile",sa:"Sysadmin",ct:"Certifications"};
+
+const DATA={phases:[
+{id:"p0",label:"Phase 0 — Foundations",items:[
+{id:"dsa",name:"DSA",emoji:"🧠",type:"concept",days:"7–10 days",roles:["all"],
+  concepts:{basic:["Arrays","Linked Lists","Stacks/Queues","Hash Maps","Recursion","Sorting","Binary Search","Complexity"],advanced:["Trees & Graphs","Dynamic Programming","Tries","Heaps","Segment Trees","Backtracking","Greedy"]},
+  docs:[{l:"CLRS — MIT OpenCourseWare",u:"https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/"},{l:"roadmap.sh / DSA",u:"https://roadmap.sh/datastructures-and-algorithms"},{l:"VisuAlgo — animate DS/Algos",u:"https://visualgo.net"},{l:"Big-O Cheatsheet",u:"https://bigocheatsheet.com"}],
+  youtube:[{l:"Abdul Bari — Algorithms full course",u:"https://youtube.com/playlist?list=PLDN4rrl48XKpZkf03iYFl-O29szjTrs_O"},{l:"William Fiset — Algorithms & DS",u:"https://youtube.com/@WilliamFiset-videos"},{l:"NeetCode — LeetCode patterns",u:"https://youtube.com/@NeetCode"}],
+  practice:[{l:"NeetCode 150",u:"https://neetcode.io/practice"},{l:"LeetCode Blind 75",u:"https://leetcode.com/discuss/general-discussion/460599"},{l:"CSES Problem Set",u:"https://cses.fi/problemset/"},{l:"HackerRank DSA",u:"https://hackerrank.com/domains/data-structures"}],
+  projects:[{t:"mini",n:"Implement all core DSA from scratch in your primary language"},{t:"mini",n:"LRU Cache implementation"},{t:"major",n:"Search autocomplete engine using Trie"},{t:"excl",n:"Graph pathfinder visualizer — Dijkstra + A*"}],
+  refs:[{t:"TheAlgorithms/Python",u:"https://github.com/TheAlgorithms/Python",d:"Every classic algorithm & data structure implemented in Python. Great to read alongside your own implementations.",tags:["Python","reference","all algos"]},{t:"TheAlgorithms/JavaScript",u:"https://github.com/TheAlgorithms/JavaScript",d:"Same as above but in JS/TS. Use both to compare idiomatic approaches.",tags:["JavaScript","reference"]},{t:"kdn251/interviews",u:"https://github.com/kdn251/interviews",d:"Curated solutions to famous interview problems across companies (Google, Facebook, Uber). Good reality check.",tags:["interviews","company-wise"]},{t:"neetcode-io/neetcode",u:"https://github.com/neetcode-io/neetcode",d:"Official repo for NeetCode solutions with explanations — study the code after you attempt problems.",tags:["LeetCode","patterns"]}]
+},
+{id:"linux",name:"Linux / Shell",emoji:"🐧",type:"concept",days:"5–7 days",roles:["be","do","sa","fs"],
+  concepts:{basic:["Filesystem & navigation","Permissions (chmod/chown)","Pipes & redirection","Bash scripting basics","Process management","SSH / SCP","Package management"],advanced:["Systemd & services","Cron jobs","Networking tools (ss, tcpdump)","awk/sed/grep mastery","File descriptors","Kernel basics","Shell scripting advanced"]},
+  docs:[{l:"The Linux Command Line (free book)",u:"https://linuxcommand.org/tlcl.php"},{l:"tldr pages",u:"https://tldr.sh"},{l:"explainshell.com",u:"https://explainshell.com"},{l:"Bash Reference Manual",u:"https://gnu.org/software/bash/manual/bash.html"},{l:"Linux Command Cheatsheet",u:"https://cheatography.com/davechild/cheat-sheets/linux-command-line/"}],
+  youtube:[{l:"NetworkChuck — Linux for Hackers",u:"https://youtube.com/@NetworkChuck"},{l:"LearnLinuxTV — Bash Scripting",u:"https://youtube.com/@LearnLinuxTV"},{l:"tutoriaLinux — sysadmin basics",u:"https://youtube.com/@tutoriaLinux"}],
+  practice:[{l:"OverTheWire: Bandit",u:"https://overthewire.org/wargames/bandit/"},{l:"HackerRank Linux Shell",u:"https://hackerrank.com/domains/shell"},{l:"cmdchallenge.com",u:"https://cmdchallenge.com"}],
+  projects:[{t:"mini",n:"Bash script to automate dotfiles setup"},{t:"mini",n:"Log parser using awk + grep"},{t:"major",n:"Full server setup script (Nginx + SSL + firewall + monitoring)"},{t:"excl",n:"Mini shell interpreter in C"}],
+  refs:[{t:"ohmyzsh/ohmyzsh",u:"https://github.com/ohmyzsh/ohmyzsh",d:"The most-starred shell framework. Read the plugin source to learn real-world bash patterns.",tags:["bash","zsh","plugins"]},{t:"mathiasbynens/dotfiles",u:"https://github.com/mathiasbynens/dotfiles",d:"Famous dotfiles repo. Study how a senior dev sets up their entire environment from scratch.",tags:["dotfiles","bash","macOS"]},{t:"nicknisi/dotfiles",u:"https://github.com/nicknisi/dotfiles",d:"Well-documented dotfiles with nvim, tmux, zsh. Good template to study and build your own.",tags:["dotfiles","nvim","tmux"]},{t:"dylanaraps/pure-bash-bible",u:"https://github.com/dylanaraps/pure-bash-bible",d:"Bash-only solutions to common tasks without calling external programs. Pure skill builder.",tags:["bash","advanced","no-deps"]}]
+},
+{id:"networks",name:"Computer Networks",emoji:"🌐",type:"concept",days:"5–7 days",roles:["be","do","sa","fs"],
+  concepts:{basic:["OSI / TCP-IP model","HTTP/HTTPS","DNS resolution","IP + CIDR","TCP vs UDP","TLS/SSL","Ports & protocols"],advanced:["Load balancing","CDNs","WebSockets","gRPC","Proxies & VPNs","BGP basics","Network security"]},
+  docs:[{l:"Cloudflare Learning Center",u:"https://cloudflare.com/learning/"},{l:"MDN — HTTP docs",u:"https://developer.mozilla.org/docs/Web/HTTP"},{l:"Computer Networking slides (Kurose)",u:"https://gaia.cs.umass.edu/kurose_ross/online_lectures.htm"},{l:"roadmap.sh — How the Internet works",u:"https://roadmap.sh/guides/what-is-internet"}],
+  youtube:[{l:"Computerphile — Networking playlist",u:"https://youtube.com/playlist?list=PLzH6n4zXuckquVnQ0KlMDxyT5YE-sA8Ps"},{l:"Hussein Nasser — Backend Engineering",u:"https://youtube.com/@hnasr"},{l:"NetworkChuck — Networking",u:"https://youtube.com/@NetworkChuck"}],
+  practice:[{l:"Wireshark packet labs",u:"https://wireshark.org"},{l:"TryHackMe Networking",u:"https://tryhackme.com"}],
+  projects:[{t:"mini",n:"HTTP/1.1 server from raw sockets"},{t:"major",n:"Real-time chat app with WebSockets"},{t:"excl",n:"DNS resolver from scratch"}],
+  refs:[{t:"nicowillis/httpfromtcp",u:"https://github.com/bootdotdev/bootdev-courses",d:"Boot.dev's HTTP-from-TCP course repo — see how a real HTTP server is built layer by layer from scratch.",tags:["HTTP","TCP","from scratch"]},{t:"mafintosh/peerflix",u:"https://github.com/mafintosh/peerflix",d:"Torrent streaming built on raw networking concepts. Great study for P2P and socket-level thinking.",tags:["networking","P2P","Node.js"]},{t:"elixir-plug/plug",u:"https://github.com/elixir-plug/plug",d:"Minimal HTTP middleware. Read the conn abstraction to understand HTTP request/response cycles deeply.",tags:["HTTP","middleware"]}]
+},
+{id:"dbms",name:"DBMS / PostgreSQL",emoji:"🗄️",type:"concept",days:"5–7 days",roles:["be","fs","sa","all"],
+  concepts:{basic:["SQL (SELECT, JOIN, GROUP BY)","Normalization 1NF–3NF","ACID properties","Indexes","Transactions","CRUD","ERD design"],advanced:["Query optimization / EXPLAIN","Window functions","CTEs","Partitioning","Replication","Connection pooling","JSONB, arrays, full-text search"]},
+  docs:[{l:"PostgreSQL Official Docs",u:"https://postgresql.org/docs/"},{l:"Use The Index, Luke",u:"https://use-the-index-luke.com"},{l:"PostgreSQL Tutorial",u:"https://postgresqltutorial.com"},{l:"roadmap.sh — PostgreSQL DBA",u:"https://roadmap.sh/postgresql-dba"},{l:"pgexercises.com",u:"https://pgexercises.com"}],
+  youtube:[{l:"Hussein Nasser — PostgreSQL deep dives",u:"https://youtube.com/@hnasr"},{l:"Fireship — SQL in 100 seconds",u:"https://youtube.com/watch?v=zsjvFFKOm3c"},{l:"BroCode — SQL Full Course",u:"https://youtube.com/@BroCodez"}],
+  practice:[{l:"HackerRank SQL",u:"https://hackerrank.com/domains/sql"},{l:"LeetCode SQL problems",u:"https://leetcode.com/problemset/database/"},{l:"pgexercises.com",u:"https://pgexercises.com"}],
+  projects:[{t:"mini",n:"E-commerce schema design"},{t:"major",n:"Analytics dashboard with window functions & CTEs"},{t:"excl",n:"Full-text search engine using PostgreSQL tsvector"}],
+  refs:[{t:"supabase/supabase",u:"https://github.com/supabase/supabase",d:"Open-source Firebase alternative on top of Postgres. Study how they expose PG features (RLS, realtime, functions).",tags:["PostgreSQL","realtime","RLS"]},{t:"pgvector/pgvector",u:"https://github.com/pgvector/pgvector",d:"Postgres extension for vector similarity search. Shows how extensions hook into PG internals.",tags:["PostgreSQL","vectors","ML"]},{t:"sosedoff/pgweb",u:"https://github.com/sosedoff/pgweb",d:"Clean Go-based Postgres web UI. Study the query and schema introspection patterns.",tags:["PostgreSQL","Go","UI"]},{t:"bytebase/bytebase",u:"https://github.com/bytebase/bytebase",d:"Database schema change management tool. Great reference for migrations, review workflows, and multi-env DB strategy.",tags:["migrations","schema","DevOps"]}]
+},
+{id:"git",name:"Git & GitHub",emoji:"🌿",type:"tool",days:"2–3 days",roles:["all"],
+  concepts:{basic:["init, add, commit, push, pull","Branching & merging","Rebasing","Stash",".gitignore","Pull Requests"],advanced:["Git internals (objects)","Cherry-pick","Bisect","Hooks","Submodules","GitHub Actions CI/CD","Signing commits"]},
+  docs:[{l:"Pro Git Book (free)",u:"https://git-scm.com/book/en/v2"},{l:"Oh Shit Git!",u:"https://ohshitgit.com"},{l:"GitHub Docs",u:"https://docs.github.com"},{l:"Git Cheatsheet (GitHub)",u:"https://education.github.com/git-cheat-sheet-education.pdf"}],
+  youtube:[{l:"Fireship — Git in 100 seconds",u:"https://youtube.com/watch?v=hwP7WQkmECE"},{l:"Traversy Media — Git Crash Course",u:"https://youtube.com/watch?v=SWYqp7iY_Tc"}],
+  practice:[{l:"learngitbranching.js.org",u:"https://learngitbranching.js.org"},{l:"gitexercises.fracz.com",u:"https://gitexercises.fracz.com"}],
+  projects:[{t:"mini",n:"Monorepo with git hooks (lint on commit)"},{t:"major",n:"Full deploy pipeline with GitHub Actions"},{t:"excl",n:"Custom git hook that enforces conventional commits + auto-generates changelog"}],
+  refs:[{t:"conventional-commits/spec",u:"https://github.com/conventional-commits/conventionalcommits.org",d:"The spec behind conventional commits. Understanding this makes your git history readable and automation-friendly.",tags:["git","commits","changelog"]},{t:"pre-commit/pre-commit",u:"https://github.com/pre-commit/pre-commit",d:"Industry-standard pre-commit hook framework. Study how hooks are defined and chained across languages.",tags:["git","hooks","automation"]},{t:"cli/cli (gh)",u:"https://github.com/cli/cli",d:"GitHub's official CLI tool written in Go. Study the PR/issue automation code for real-world CLI design.",tags:["GitHub","CLI","Go"]}]
+}
+]},
+{id:"p1",label:"Phase 1 — Core Languages",items:[
+{id:"js",name:"JavaScript / TypeScript",emoji:"🟨",type:"language",days:"5 days",roles:["fe","fs","be"],
+  concepts:{basic:["Variables, types, functions","DOM manipulation","Async/Await, Promises","ES6+ (destructuring, spread, modules)","Event loop","Array/Object methods","TypeScript basics"],advanced:["Prototypal inheritance","Closures & scopes","Generators","TypeScript generics & utility types","Decorators","V8 internals","Monads in TS"]},
+  docs:[{l:"javascript.info (best guide)",u:"https://javascript.info"},{l:"MDN JavaScript",u:"https://developer.mozilla.org/docs/Web/JavaScript"},{l:"TypeScript Handbook",u:"https://typescriptlang.org/docs/"},{l:"roadmap.sh — JavaScript",u:"https://roadmap.sh/javascript"},{l:"learnxinyminutes JS",u:"https://learnxinyminutes.com/docs/javascript/"}],
+  youtube:[{l:"Akshay Saini — Namaste JavaScript",u:"https://youtube.com/@akshaymarch7"},{l:"Fireship — JS in 100 seconds",u:"https://youtube.com/watch?v=DHjqpvDnNGE"},{l:"Matt Pocock — TypeScript wizard",u:"https://youtube.com/@mattpocockuk"},{l:"The Primeagen — TS projects",u:"https://youtube.com/@ThePrimeagen"}],
+  practice:[{l:"exercism.io — JavaScript",u:"https://exercism.org/tracks/javascript"},{l:"TypeScript exercises",u:"https://typescript-exercises.github.io"},{l:"JavaScript30 by Wes Bos",u:"https://javascript30.com"}],
+  projects:[{t:"mini",n:"CLI todo app in TypeScript"},{t:"major",n:"REST API with Node.js + Express + TypeScript + Postgres"},{t:"excl",n:"Type-safe event emitter using TypeScript conditional types & mapped types"}],
+  refs:[{t:"colinhacks/zod",u:"https://github.com/colinhacks/zod",d:"TypeScript-first schema validation. Study how it uses generics and inference to build a fluent API — a masterclass in TS type-level programming.",tags:["TypeScript","validation","generics"]},{t:"trpc/trpc",u:"https://github.com/trpc/trpc",d:"End-to-end typesafe APIs. Shows how TypeScript's type inference can be pushed to eliminate an entire API contract layer.",tags:["TypeScript","APIs","type-safety"]},{t:"total-typescript/type-challenges",u:"https://github.com/type-challenges/type-challenges",d:"Collection of TypeScript type system challenges from easy to extreme. Work through these to master generics.",tags:["TypeScript","challenges","generics"]},{t:"honojs/hono",u:"https://github.com/honojs/hono",d:"Ultra-fast, minimal web framework for edges. Clean modern TypeScript code — great to read for framework internals.",tags:["TypeScript","web","edge"]}]
+},
+{id:"python",name:"Python",emoji:"🐍",type:"language",days:"5 days",roles:["be","ml","fs","sa"],
+  concepts:{basic:["Data types, list/dict comprehensions","Functions, *args/**kwargs","OOP in Python","File I/O","Standard library","Decorators basics","pip & virtual envs"],advanced:["Generators & coroutines","asyncio","Metaclasses","Descriptors","CPython internals","Type hints (mypy)","Context managers"]},
+  docs:[{l:"Python Official Docs",u:"https://docs.python.org/3/"},{l:"Real Python tutorials",u:"https://realpython.com"},{l:"Python Cheatsheet",u:"https://pythoncheatsheet.org"},{l:"roadmap.sh — Python",u:"https://roadmap.sh/python"},{l:"learnxinyminutes Python",u:"https://learnxinyminutes.com/docs/python/"}],
+  youtube:[{l:"Corey Schafer — Python full series",u:"https://youtube.com/@coreyms"},{l:"Fireship — Python in 100 seconds",u:"https://youtube.com/watch?v=x7X9w_GIm1s"},{l:"ArjanCodes — Python architecture",u:"https://youtube.com/@ArjanCodes"},{l:"Tech With Tim — Python projects",u:"https://youtube.com/@TechWithTim"}],
+  practice:[{l:"exercism.io — Python",u:"https://exercism.org/tracks/python"},{l:"PyBites challenges",u:"https://codechalleng.es"},{l:"CheckIO Python",u:"https://py.checkio.org"}],
+  projects:[{t:"mini",n:"Web scraper with BeautifulSoup + requests"},{t:"major",n:"FastAPI REST service + SQLAlchemy + Alembic migrations"},{t:"excl",n:"Custom async web framework using asyncio low-level transport/protocol APIs"}],
+  refs:[{t:"fastapi/fastapi",u:"https://github.com/fastapi/fastapi",d:"Modern Python web framework. Study how it uses type hints and Pydantic for automatic validation, serialization, and OpenAPI docs generation.",tags:["Python","async","type hints"]},{t:"tiangolo/sqlmodel",u:"https://github.com/tiangolo/sqlmodel",d:"SQLAlchemy + Pydantic combined. Shows how to build elegant ORM bindings using Python dataclasses.",tags:["Python","SQLAlchemy","ORM"]},{t:"astral-sh/ruff",u:"https://github.com/astral-sh/ruff",d:"Python linter written in Rust. Study this to understand both Python tooling internals AND how Python ASTs are parsed.",tags:["Python","Rust","tooling"]},{t:"psf/black",u:"https://github.com/psf/black",d:"The uncompromising Python formatter. Good reference for AST manipulation and the philosophy of opinionated tooling.",tags:["Python","formatter","AST"]}]
+},
+{id:"go",name:"Go",emoji:"🐹",type:"language",days:"5 days",roles:["be","do","sa"],
+  concepts:{basic:["Types, structs, interfaces","Goroutines & channels","Error handling","Packages & modules","defer/panic/recover","Testing pkg"],advanced:["Context package","Sync primitives (Mutex, WaitGroup)","Reflection","Go scheduler internals","Generics","CGo","embed package"]},
+  docs:[{l:"Tour of Go (official)",u:"https://go.dev/tour/"},{l:"Go by Example",u:"https://gobyexample.com"},{l:"Effective Go",u:"https://go.dev/doc/effective_go"},{l:"roadmap.sh — Go",u:"https://roadmap.sh/golang"},{l:"learnxinyminutes Go",u:"https://learnxinyminutes.com/docs/go/"}],
+  youtube:[{l:"Fireship — Go in 100 seconds",u:"https://youtube.com/watch?v=446E-r0rXHI"},{l:"Anthony GG — Go advanced patterns",u:"https://youtube.com/@anthonygg_"},{l:"TechWorld with Nana — Go Crash Course",u:"https://youtube.com/watch?v=yyUHQIec83I"}],
+  practice:[{l:"exercism.io — Go track",u:"https://exercism.org/tracks/go"},{l:"Gophercises",u:"https://gophercises.com"}],
+  projects:[{t:"mini",n:"CLI tool using cobra + viper"},{t:"major",n:"REST API with chi + sqlx + Postgres"},{t:"excl",n:"Concurrent web crawler — goroutines + channels + context cancellation"}],
+  refs:[{t:"spf13/cobra",u:"https://github.com/spf13/cobra",d:"The CLI library Go tools are built on (kubectl, gh, Hugo). Study how commands, flags, and completion are wired together.",tags:["Go","CLI","reference"]},{t:"golang/go (stdlib)",u:"https://github.com/golang/go",d:"Read net/http and sync package source. The stdlib is idiomatic Go — better than any tutorial for learning patterns.",tags:["Go","stdlib","internals"]},{t:"charmbracelet/bubbletea",u:"https://github.com/charmbracelet/bubbletea",d:"Elm-architecture TUI framework in Go. Shows functional state management patterns applied to Go.",tags:["Go","TUI","Elm-arch"]},{t:"grafana/k6",u:"https://github.com/grafana/k6",d:"Load testing tool in Go. Study the plugin system, JS runtime embedding, and concurrent execution model.",tags:["Go","performance","concurrency"]}]
+},
+{id:"rust",name:"Rust",emoji:"🦀",type:"language",days:"5 days",roles:["be","sa"],
+  concepts:{basic:["Ownership & borrowing","Lifetimes","Structs, enums, match","Traits","Result/Option","Cargo basics","Collections"],advanced:["Smart pointers (Box, Rc, Arc)","Async with Tokio","Unsafe Rust","Macros","WASM target","Zero-cost abstractions","Trait objects vs generics"]},
+  docs:[{l:"The Rust Book (official)",u:"https://doc.rust-lang.org/book/"},{l:"Rust by Example",u:"https://doc.rust-lang.org/rust-by-example/"},{l:"Rustlings (interactive)",u:"https://github.com/rust-lang/rustlings"},{l:"roadmap.sh — Rust",u:"https://roadmap.sh/rust"},{l:"learnxinyminutes Rust",u:"https://learnxinyminutes.com/docs/rust/"}],
+  youtube:[{l:"No Boilerplate — Rust deep dives",u:"https://youtube.com/@NoBoilerplate"},{l:"Jon Gjengset — Crust of Rust",u:"https://youtube.com/@jonhoo"},{l:"Let's Get Rusty",u:"https://youtube.com/@letsgetrusty"},{l:"Fireship — Rust in 100 seconds",u:"https://youtube.com/watch?v=5C_HPTJg1lc"}],
+  practice:[{l:"exercism.io — Rust track",u:"https://exercism.org/tracks/rust"},{l:"Advent of Code in Rust",u:"https://adventofcode.com"}],
+  projects:[{t:"mini",n:"Command-line JSON formatter"},{t:"major",n:"Async REST API with Axum + SQLx + Tokio"},{t:"excl",n:"Zero-copy DSL parser using ownership to guarantee memory safety at compile time"}],
+  refs:[{t:"BurntSushi/ripgrep",u:"https://github.com/BurntSushi/ripgrep",d:"Fastest grep in the world, written in Rust. Study the parallel search, memory-mapped I/O, and regex engine integration.",tags:["Rust","performance","I/O"]},{t:"tokio-rs/axum",u:"https://github.com/tokio-rs/axum",d:"Ergonomic async web framework. Study how it uses Rust's type system to make routing and extractors zero-cost.",tags:["Rust","async","web"]},{t:"zed-industries/zed",u:"https://github.com/zed-industries/zed",d:"High-performance code editor in Rust. Read the CRDT-based collaborative editing and GPU rendering code.",tags:["Rust","editor","CRDT","GPU"]},{t:"rust-lang/rustlings",u:"https://github.com/rust-lang/rustlings",d:"Official interactive exercises. Work through these before any real project — designed specifically to teach ownership.",tags:["Rust","exercises","beginners"]}]
+},
+{id:"java",name:"Java",emoji:"☕",type:"language",days:"5 days",roles:["be","fs","mo"],
+  concepts:{basic:["OOP (classes, interfaces, abstract)","Generics","Collections Framework","Exception handling","Java 8+ streams & lambda","JVM basics","Maven/Gradle"],advanced:["Concurrency (ExecutorService, CompletableFuture)","Spring Boot","JVM internals (JIT, GC)","Reflection","Records & sealed classes","Virtual Threads (Loom)","Reactive streams"]},
+  docs:[{l:"Oracle Java Docs",u:"https://docs.oracle.com/en/java/"},{l:"Baeldung Java guides",u:"https://baeldung.com"},{l:"Spring Boot Docs",u:"https://spring.io/projects/spring-boot"},{l:"roadmap.sh — Java",u:"https://roadmap.sh/java"},{l:"learnxinyminutes Java",u:"https://learnxinyminutes.com/docs/java/"}],
+  youtube:[{l:"Amigoscode — Java + Spring Boot",u:"https://youtube.com/@amigoscode"},{l:"Telusko — Java full course",u:"https://youtube.com/@Telusko"},{l:"Fireship — Java in 100 seconds",u:"https://youtube.com/watch?v=l9AzO1FMgM8"}],
+  practice:[{l:"exercism.io — Java track",u:"https://exercism.org/tracks/java"},{l:"HackerRank Java",u:"https://hackerrank.com/domains/java"}],
+  projects:[{t:"mini",n:"Spring Boot CRUD REST API"},{t:"major",n:"Microservices with Spring Cloud + Kafka"},{t:"excl",n:"Concurrent task scheduler using Project Loom virtual threads"}],
+  refs:[{t:"spring-projects/spring-boot",u:"https://github.com/spring-projects/spring-boot",d:"Read the autoconfiguration source to understand how @EnableAutoConfiguration wires hundreds of beans based on classpath. Core Spring internals.",tags:["Java","Spring","autoconfiguration"]},{t:"google/guava",u:"https://github.com/google/guava",d:"Google's core Java libraries. Study immutable collections, caching, and utilities — all idiomatic, well-tested Java.",tags:["Java","utilities","Google"]},{t:"iluwatar/java-design-patterns",u:"https://github.com/iluwatar/java-design-patterns",d:"All 30+ GoF design patterns implemented in Java with real-world examples. Essential reading for Java system design.",tags:["Java","design patterns","OOP"]},{t:"quarkusio/quarkus",u:"https://github.com/quarkusio/quarkus",d:"Cloud-native Java framework with native compilation via GraalVM. Study the build-time vs runtime approach.",tags:["Java","cloud-native","GraalVM"]}]
+},
+{id:"kotlin",name:"Kotlin",emoji:"🎯",type:"language",days:"4 days",roles:["mo","be"],
+  concepts:{basic:["Null safety","Data classes, sealed classes","Extension functions","Coroutines basics","Lambdas & HOF","Kotlin DSL"],advanced:["Coroutines Flow","Kotlin Multiplatform","Inline + reified types","Delegation patterns","Ktor","Compose Multiplatform"]},
+  docs:[{l:"Kotlin Official Docs",u:"https://kotlinlang.org/docs/"},{l:"Kotlin Koans (interactive)",u:"https://play.kotlinlang.org/koans"},{l:"roadmap.sh — Android",u:"https://roadmap.sh/android"},{l:"learnxinyminutes Kotlin",u:"https://learnxinyminutes.com/docs/kotlin/"}],
+  youtube:[{l:"Philipp Lackner — Android/Kotlin",u:"https://youtube.com/@PhilippLackner"},{l:"Fireship — Kotlin in 100 seconds",u:"https://youtube.com/watch?v=xT8oP0wy-A0"}],
+  practice:[{l:"exercism.io — Kotlin track",u:"https://exercism.org/tracks/kotlin"},{l:"Kotlin Koans",u:"https://play.kotlinlang.org/koans"}],
+  projects:[{t:"mini",n:"Android To-Do app with Jetpack Compose"},{t:"major",n:"Full Android app — MVVM + Room + Retrofit"},{t:"excl",n:"Kotlin DSL builder for generating HTML/configs (showcases extension functions + reified types)"}],
+  refs:[{t:"philipplackner-official/CashifyApp",u:"https://github.com/philipplackner-official",d:"Philipp Lackner's project repos — clean Android MVVM with Compose, Hilt, and Coroutines Flow. Read this to understand production Android architecture.",tags:["Kotlin","Android","MVVM","Compose"]},{t:"ktorio/ktor",u:"https://github.com/ktorio/ktor",d:"Kotlin async web framework by JetBrains. Study how coroutines are used to build a fully async HTTP pipeline.",tags:["Kotlin","async","web"]},{t:"JakeWharton/retrofit",u:"https://github.com/square/retrofit",d:"HTTP client for Android/Java. Study the annotation-based interface design and how it maps to HTTP calls.",tags:["Kotlin","Android","HTTP"]},{t:"android/architecture-samples",u:"https://github.com/android/architecture-samples",d:"Official Google Android architecture samples. The canonical reference for MVVM + Clean Architecture on Android.",tags:["Kotlin","Android","architecture","official"]}]
+},
+{id:"swift",name:"Swift",emoji:"🍎",type:"language",days:"4 days",roles:["mo"],
+  concepts:{basic:["Optionals, guard","Closures","Protocols","Structs vs Classes","SwiftUI basics","Swift Package Manager"],advanced:["Async/Await & actors","Generics + associated types","Property wrappers","Result builders","Combine framework","Macros (Swift 5.9)"]},
+  docs:[{l:"Swift Book (free)",u:"https://docs.swift.org/swift-book/"},{l:"Hacking with Swift",u:"https://hackingwithswift.com"},{l:"roadmap.sh — iOS",u:"https://roadmap.sh/ios"},{l:"Swift Official Docs",u:"https://swift.org/documentation/"}],
+  youtube:[{l:"Sean Allen — iOS Swift",u:"https://youtube.com/@seanallen"},{l:"Fireship — Swift in 100 seconds",u:"https://youtube.com/watch?v=nAchMctX4YA"},{l:"Stewart Lynch — SwiftUI",u:"https://youtube.com/@StewartLynch"}],
+  practice:[{l:"exercism.io — Swift track",u:"https://exercism.org/tracks/swift"},{l:"100 Days of SwiftUI",u:"https://hackingwithswift.com/100/swiftui"}],
+  projects:[{t:"mini",n:"SwiftUI weather app"},{t:"major",n:"Full iOS app — CoreData + Combine + MVVM"},{t:"excl",n:"Result builder DSL for constructing SwiftUI-like view hierarchies"}],
+  refs:[{t:"Alamofire/Alamofire",u:"https://github.com/Alamofire/Alamofire",d:"Elegant HTTP networking in Swift. Study how it wraps URLSession with a clean chainable API and concurrency-safe design.",tags:["Swift","networking","iOS"]},{t:"vapor/vapor",u:"https://github.com/vapor/vapor",d:"Server-side Swift framework. Shows how Swift's async/await and actors are used to build a production HTTP server.",tags:["Swift","server-side","async"]},{t:"nicklockwood/SwiftFormat",u:"https://github.com/nicklockwood/SwiftFormat",d:"Swift code formatter. Reading it shows advanced Swift AST manipulation and plugin architecture.",tags:["Swift","tooling","AST"]},{t:"hackiftekhar/IQKeyboardManager",u:"https://github.com/hackiftekhar/IQKeyboardManager",d:"Zero-config keyboard handling for iOS. Study the runtime magic (method swizzling, notifications) used to avoid boilerplate.",tags:["Swift","iOS","Objective-C runtime"]}]
+},
+{id:"dart",name:"Dart / Flutter",emoji:"💙",type:"language",days:"4 days",roles:["mo","fs"],
+  concepts:{basic:["Dart null safety","Async/await, Streams","Widgets (stateless/stateful)","State management (Riverpod/BLoC)","Flutter layout model"],advanced:["BLoC pattern","Platform channels","Flutter rendering pipeline","Dart isolates","Flutter Web & Desktop"]},
+  docs:[{l:"Flutter Docs",u:"https://flutter.dev/docs"},{l:"Dart Docs",u:"https://dart.dev/guides"},{l:"roadmap.sh — Flutter",u:"https://roadmap.sh/flutter"},{l:"learnxinyminutes Dart",u:"https://learnxinyminutes.com/docs/dart/"}],
+  youtube:[{l:"Flutter — Official channel",u:"https://youtube.com/@flutterdev"},{l:"Rivaan Ranawat — Flutter full",u:"https://youtube.com/@RivaanRanawat"},{l:"Fireship — Flutter in 100 seconds",u:"https://youtube.com/watch?v=lHhRng6ZNm0"}],
+  practice:[{l:"exercism.io — Dart track",u:"https://exercism.org/tracks/dart"},{l:"Flutter codelabs",u:"https://codelabs.developers.google.com/flutter"}],
+  projects:[{t:"mini",n:"Cross-platform todo app with Riverpod"},{t:"major",n:"E-commerce app — iOS + Android + Web"},{t:"excl",n:"Custom Flutter render object — draws directly to canvas, bypasses widget layer"}],
+  refs:[{t:"rrousselGit/riverpod",u:"https://github.com/rrousselGit/riverpod",d:"The gold standard for Flutter state management. Study how it uses Dart's type system and code generation to build reactive state.",tags:["Dart","state","Flutter"]},{t:"felangel/bloc",u:"https://github.com/felangel/bloc",d:"BLoC pattern implementation. Study the stream-based event → state → UI flow — excellent for understanding reactive architecture.",tags:["Dart","BLoC","streams"]},{t:"flutter/samples",u:"https://github.com/flutter/samples",d:"Official Flutter sample apps by the Flutter team. The best starting point to see production-quality Flutter code.",tags:["Flutter","official","samples"]},{t:"AppFlowy-IO/AppFlowy",u:"https://github.com/AppFlowy-IO/AppFlowy",d:"Open-source Notion alternative built in Flutter + Rust. Study this for large-scale Flutter app architecture.",tags:["Flutter","Rust","large-scale"]}]
+},
+{id:"ruby",name:"Ruby",emoji:"💎",type:"language",days:"3 days",roles:["be","fs"],
+  concepts:{basic:["Blocks, procs, lambdas","Mixins & modules","Open classes","Enumerable","Rails MVC basics"],advanced:["Metaprogramming (method_missing, define_method)","Fibers & Ractor","Rails internals","ActiveRecord deep dive","Ruby concurrency"]},
+  docs:[{l:"Ruby Docs",u:"https://ruby-doc.org"},{l:"Ruby on Rails Guides",u:"https://guides.rubyonrails.org"},{l:"roadmap.sh — Ruby on Rails",u:"https://roadmap.sh/ruby-on-rails"},{l:"learnxinyminutes Ruby",u:"https://learnxinyminutes.com/docs/ruby/"}],
+  youtube:[{l:"GoRails — Rails tutorials",u:"https://gorails.com"},{l:"Fireship — Ruby in 100 seconds",u:"https://youtube.com/watch?v=UYm0kfnRTJk"}],
+  practice:[{l:"exercism.io — Ruby track",u:"https://exercism.org/tracks/ruby"},{l:"Ruby Koans",u:"http://rubykoans.com"}],
+  projects:[{t:"mini",n:"Sinatra REST API"},{t:"major",n:"Rails SaaS — Devise + Stripe + Turbo"},{t:"excl",n:"Rails-like DSL router using method_missing + define_method"}],
+  refs:[{t:"rails/rails",u:"https://github.com/rails/rails",d:"Read ActiveRecord and ActionController source. The codebase defines idiomatic Ruby metaprogramming at the highest level.",tags:["Ruby","Rails","metaprogramming"]},{t:"sinatra/sinatra",u:"https://github.com/sinatra/sinatra",d:"Minimal Ruby web DSL. Under 2000 lines — perfect to read cover-to-cover to understand how DSLs are built.",tags:["Ruby","DSL","minimal"]},{t:"rubocop/rubocop",u:"https://github.com/rubocop/rubocop",d:"Ruby linter and formatter. Study how it walks Ruby ASTs — great for understanding Ruby's parse tree.",tags:["Ruby","AST","linting"]},{t:"basecamp/solid_queue",u:"https://github.com/basecamp/solid_queue",d:"Database-backed job queue from the Rails team. Modern, well-structured Rails engine — study how background processing is designed.",tags:["Ruby","Rails","background jobs"]}]
+},
+{id:"php",name:"PHP",emoji:"🐘",type:"language",days:"3 days",roles:["be","fs"],
+  concepts:{basic:["Types, arrays, OOP","Composer","Laravel basics","PSR standards","PDO/MySQL"],advanced:["Laravel queues & events","PHP 8.x fibers & enums","Swoole async","Dependency injection"]},
+  docs:[{l:"PHP Manual",u:"https://php.net/manual/"},{l:"Laravel Docs",u:"https://laravel.com/docs"},{l:"roadmap.sh — PHP",u:"https://roadmap.sh/php"},{l:"learnxinyminutes PHP",u:"https://learnxinyminutes.com/docs/php/"}],
+  youtube:[{l:"Traversy Media — PHP crash course",u:"https://youtube.com/@traversymedia"},{l:"Fireship — PHP in 100 seconds",u:"https://youtube.com/watch?v=a7_WFUlFS94"}],
+  practice:[{l:"exercism.io — PHP track",u:"https://exercism.org/tracks/php"}],
+  projects:[{t:"mini",n:"REST API with Slim framework"},{t:"major",n:"Laravel SaaS with multi-tenancy"},{t:"excl",n:"PHP Fiber-based async HTTP client (PHP 8.1 fibers)"}],
+  refs:[{t:"laravel/framework",u:"https://github.com/laravel/framework",d:"Read the Container (IoC), Pipeline, and Eloquent ORM source. Laravel is the best example of expressive PHP architecture.",tags:["PHP","Laravel","IoC","ORM"]},{t:"symfony/symfony",u:"https://github.com/symfony/symfony",d:"Enterprise PHP framework. Study the dependency injection container and event dispatcher — used by Drupal, Magento, and Laravel internally.",tags:["PHP","Symfony","DI"]},{t:"pestphp/pest",u:"https://github.com/pestphp/pest",d:"Elegant PHP testing framework. Study how it builds a fluent test DSL on top of PHPUnit using closures.",tags:["PHP","testing","DSL"]},{t:"nunomaduro/collision",u:"https://github.com/nunomaduro/collision",d:"Beautiful error reporting for PHP CLI. Study how it hooks into PHP's error handling and renders rich output.",tags:["PHP","CLI","DX"]}]
+},
+{id:"ocaml",name:"OCaml",emoji:"🐪",type:"language",days:"4 days",roles:["be"],
+  concepts:{basic:["Pattern matching","Algebraic data types","Modules & functors","Immutability","Option/Result types","Dune build system"],advanced:["GADTs","Effect handlers (OCaml 5)","ppx preprocessors","Eio async","Parsing with Menhir"]},
+  docs:[{l:"Real World OCaml (free)",u:"https://dev.realworldocaml.org"},{l:"OCaml Docs",u:"https://ocaml.org/docs"},{l:"learnxinyminutes OCaml",u:"https://learnxinyminutes.com/docs/ocaml/"},{l:"OCaml Cheatsheet",u:"https://ocaml.org/docs/cheat-sheets"}],
+  youtube:[{l:"Jane Street — OCaml talks",u:"https://youtube.com/@janestreet8354"},{l:"Fireship — OCaml in 100 seconds",u:"https://youtube.com/watch?v=LpBWXJqn7B4"}],
+  practice:[{l:"exercism.io — OCaml track",u:"https://exercism.org/tracks/ocaml"}],
+  projects:[{t:"mini",n:"JSON parser using pattern matching"},{t:"major",n:"REST API with Dream framework"},{t:"excl",n:"Type-safe DSL using GADTs — invalid states are compile-time errors"}],
+  refs:[{t:"janestreet/core",u:"https://github.com/janestreet/core",d:"Jane Street's OCaml core library used in production finance systems. The gold standard for idiomatic OCaml.",tags:["OCaml","production","Jane Street"]},{t:"ocaml-dream/dream",u:"https://github.com/aantron/dream",d:"Tidy OCaml web framework. Study the type-safe routing and middleware composition using OCaml's module system.",tags:["OCaml","web","type-safe"]},{t:"ocaml/ocaml (stdlib)",u:"https://github.com/ocaml/ocaml",d:"Read the standard library source — especially the polymorphic comparison and functor-based Set/Map modules.",tags:["OCaml","stdlib","functors"]}]
+},
+{id:"haskell",name:"Haskell (GHC)",emoji:"λ",type:"language",days:"5 days",roles:["be"],
+  concepts:{basic:["Pure functions","Type classes","Pattern matching","List comprehensions","Maybe/Either monads","do-notation"],advanced:["Monad transformers","STM (concurrent Haskell)","Template Haskell","Type families","Free monads","Lens library","GADTs"]},
+  docs:[{l:"Learn You a Haskell (free)",u:"http://learnyouahaskell.com"},{l:"Haskell Docs",u:"https://haskell.org/documentation"},{l:"learnxinyminutes Haskell",u:"https://learnxinyminutes.com/docs/haskell/"},{l:"Haskell Book",u:"https://haskellbook.com"}],
+  youtube:[{l:"Tsoding — Haskell projects",u:"https://youtube.com/@tsoding"},{l:"Fireship — Haskell in 100 seconds",u:"https://youtube.com/watch?v=Qa8IfEeBJqk"}],
+  practice:[{l:"exercism.io — Haskell track",u:"https://exercism.org/tracks/haskell"},{l:"Advent of Code in Haskell",u:"https://adventofcode.com"}],
+  projects:[{t:"mini",n:"Pure functional JSON pretty-printer"},{t:"major",n:"Servant REST API with type-level routing"},{t:"excl",n:"State machine where invalid transitions are compile-time errors using phantom types"}],
+  refs:[{t:"jgm/pandoc",u:"https://github.com/jgm/pandoc",d:"Universal document converter in Haskell. One of the most complex, well-maintained Haskell codebases. Study the reader/writer architecture.",tags:["Haskell","production","parsing"]},{t:"koalaman/shellcheck",u:"https://github.com/koalaman/shellcheck",d:"Shell script linter written in Haskell. Excellent example of building a practical tool using Haskell's parsing capabilities.",tags:["Haskell","parsing","practical"]},{t:"haskell-servant/servant",u:"https://github.com/haskell-servant/servant",d:"Type-level web API descriptions in Haskell. Mind-bending use of type families and GADTs — the pinnacle of Haskell type-level programming.",tags:["Haskell","types","web","advanced"]},{t:"xmonad/xmonad",u:"https://github.com/xmonad/xmonad",d:"Tiling window manager written and configured in Haskell. Shows a pure functional approach to stateful systems.",tags:["Haskell","WM","pure functional"]}]
+},
+{id:"zig",name:"Zig",emoji:"⚡",type:"language",days:"4 days",roles:["sa","be"],
+  concepts:{basic:["Comptime","Error unions","Allocators","No hidden control flow","Build system","C interop"],advanced:["Stage2 compiler","Async (suspend/resume)","Custom allocators","WASM output","Zig for game dev"]},
+  docs:[{l:"Zig Docs",u:"https://ziglang.org/documentation/master/"},{l:"Ziglearn.org",u:"https://ziglearn.org"},{l:"learnxinyminutes Zig",u:"https://learnxinyminutes.com/docs/zig/"},{l:"Zig by Example",u:"https://zig-by-example.com"}],
+  youtube:[{l:"Dude the Builder — Zig series",u:"https://youtube.com/@dudethebuilder"},{l:"Fireship — Zig in 100 seconds",u:"https://youtube.com/watch?v=kxT8K2n_Qlg"}],
+  practice:[{l:"exercism.io — Zig track",u:"https://exercism.org/tracks/zig"},{l:"Advent of Code in Zig",u:"https://adventofcode.com"}],
+  projects:[{t:"mini",n:"Memory-efficient CSV parser"},{t:"major",n:"HTTP server in pure Zig"},{t:"excl",n:"Generic data structure using comptime type reflection — zero runtime overhead"}],
+  refs:[{t:"oven-sh/bun",u:"https://github.com/oven-sh/bun",d:"JavaScript runtime written in Zig. Studying the Zig source shows how Zig is used in a large production project with V8/JavaScriptCore integration.",tags:["Zig","production","runtime"]},{t:"ziglang/zig (stdlib)",u:"https://github.com/ziglang/zig",d:"Read the standard library allocator implementations — FixedBufferAllocator, ArenaAllocator. Essential to understand Zig's explicit memory model.",tags:["Zig","stdlib","allocators"]},{t:"natecraddock/zf",u:"https://github.com/natecraddock/zf",d:"Fuzzy finder written in Zig. Small, readable codebase — perfect first Zig project to study.",tags:["Zig","small","CLI"]}]
+},
+{id:"cpp",name:"C / C++",emoji:"⚙️",type:"language",days:"5–7 days",roles:["be","sa"],
+  concepts:{basic:["Pointers & memory management","Structs & unions","Stack vs heap","Compilation & linking","Header files & include guards","Standard library (libc / STL)","Makefiles"],advanced:["Templates & generics","RAII & smart pointers","Move semantics","std::thread & std::mutex","Virtual functions & vtables","CMake cross-platform builds","C++ STL internals"]},
+  docs:[{l:"cppreference.com",u:"https://cppreference.com"},{l:"LearnCpp.com",u:"https://learncpp.com"},{l:"Beej's Guide to C Programming",u:"https://beej.us/guide/bgc/"},{l:"roadmap.sh — C++",u:"https://roadmap.sh/cpp"},{l:"learnxinyminutes C++",u:"https://learnxinyminutes.com/docs/c++/"}],
+  youtube:[{l:"The Cherno — C++ full series",u:"https://youtube.com/playlist?list=PLlrATfBNZ98dudnM48yfGUldqGD0S4FFb"},{l:"Low Level — C/systems programming",u:"https://youtube.com/@LowLevelTV"},{l:"Fireship — C++ in 100 seconds",u:"https://youtube.com/watch?v=MNeX4EGtR5Y"}],
+  practice:[{l:"exercism.io — C++ track",u:"https://exercism.org/tracks/cpp"},{l:"LeetCode — C++ problems",u:"https://leetcode.com"},{l:"Advent of Code in C++",u:"https://adventofcode.com"}],
+  projects:[{t:"mini",n:"Memory-safe string library in C using custom allocators"},{t:"major",n:"Multi-threaded HTTP server in C++ using POSIX sockets + thread pool"},{t:"excl",n:"Linux keylogger or system utility using C and kernel interfaces (ioctl, /proc, input subsystem)"}],
+  refs:[{t:"torvalds/linux",u:"https://github.com/torvalds/linux",d:"The Linux kernel — the largest C codebase in existence. Read a driver or the scheduler to understand systems programming at scale.",tags:["C","Linux","kernel","systems"]},{t:"fffaraz/awesome-cpp",u:"https://github.com/fffaraz/awesome-cpp",d:"Curated list of C++ frameworks, libraries, and resources — the best starting point for finding what to study next.",tags:["C++","resources","curated"]},{t:"catchorg/Catch2",u:"https://github.com/catchorg/Catch2",d:"Modern C++ unit testing framework. Study how it uses macros and templates to build an expressive test DSL.",tags:["C++","testing","macros"]},{t:"google/googletest",u:"https://github.com/google/googletest",d:"Google's C++ testing framework — study it to understand C++ template metaprogramming for test assertions.",tags:["C++","testing","Google"]}]
+},
+{id:"react",name:"React / Next.js",emoji:"⚛️",type:"framework",days:"5–7 days",roles:["fe","fs"],
+  concepts:{basic:["JSX & components","Props & state","useState, useEffect, useContext","React Router","Fetch + API integration","Tailwind CSS basics","Vite setup"],advanced:["React Server Components","Next.js App Router","SSR vs SSG vs ISR","Server Actions","React Query / SWR","Zustand / Redux Toolkit","Suspense & concurrent features"]},
+  docs:[{l:"React Docs",u:"https://react.dev"},{l:"Next.js Docs",u:"https://nextjs.org/docs"},{l:"roadmap.sh — React",u:"https://roadmap.sh/react"},{l:"roadmap.sh — Frontend",u:"https://roadmap.sh/frontend"},{l:"Tailwind CSS Docs",u:"https://tailwindcss.com/docs"}],
+  youtube:[{l:"Theo (t3.gg) — React/Next.js",u:"https://youtube.com/@t3dotgg"},{l:"Josh tried coding — Next.js projects",u:"https://youtube.com/@joshtriedcoding"},{l:"Fireship — Next.js in 100 seconds",u:"https://youtube.com/watch?v=Sklc_fQBmcs"},{l:"Web Dev Simplified — React",u:"https://youtube.com/@WebDevSimplified"}],
+  practice:[{l:"React official tutorial",u:"https://react.dev/learn"},{l:"Next.js Learn course (official)",u:"https://nextjs.org/learn"},{l:"Frontend Mentor challenges",u:"https://frontendmentor.io"}],
+  projects:[{t:"mini",n:"Portfolio site with Next.js App Router + Tailwind CSS"},{t:"major",n:"Full-stack Next.js app — App Router + Prisma ORM + PostgreSQL + NextAuth"},{t:"excl",n:"Linux-themed OS portfolio with draggable windows, functional terminal emulator, and virtual filesystem"}],
+  refs:[{t:"vercel/next.js",u:"https://github.com/vercel/next.js",d:"Study the App Router implementation and React Server Components integration — the modern standard for production React apps.",tags:["React","Next.js","RSC","Vercel"]},{t:"pmndrs/zustand",u:"https://github.com/pmndrs/zustand",d:"Minimal state management — only ~100 lines. Read the source to understand how React hooks can replace Redux entirely.",tags:["React","state","minimal"]},{t:"TanStack/query",u:"https://github.com/TanStack/query",d:"Server-state management for React. Study cache invalidation, background refetch, and stale-while-revalidate patterns.",tags:["React","data fetching","cache"]},{t:"shadcn-ui/ui",u:"https://github.com/shadcn-ui/ui",d:"Component library built on Radix UI + Tailwind. Study the composition pattern — copy-paste components over black-box abstractions.",tags:["React","components","Tailwind","Radix"]}]
+}
+]},
+{id:"p2",label:"Phase 2 — Package Managers & Version Tools",items:[
+{id:"npm",name:"npm / pnpm / yarn / bun",emoji:"📦",type:"tool",days:"2 days",roles:["fe","fs","be"],
+  concepts:{basic:["package.json, scripts","dependencies vs devDependencies","Semantic versioning","lockfiles","Workspaces","npx"],advanced:["Publishing packages","pnpm disk efficiency","Bun runtime differences","Changesets","Verdaccio private registry"]},
+  docs:[{l:"npm Docs",u:"https://docs.npmjs.com"},{l:"pnpm Docs",u:"https://pnpm.io/motivation"},{l:"Bun Docs",u:"https://bun.sh/docs"},{l:"yarn Docs",u:"https://yarnpkg.com/getting-started"}],
+  youtube:[{l:"Fireship — Bun vs Node",u:"https://youtube.com/watch?v=dWqNgzZwVJQ"}],
+  practice:[{l:"Publish an npm package",u:"https://docs.npmjs.com/creating-and-publishing-unscoped-public-packages"}],
+  projects:[{t:"mini",n:"Monorepo with pnpm workspaces"},{t:"major",n:"Typed npm utility library with changesets + CI publish"},{t:"excl",n:"Zero-dependency bun plugin"}],
+  refs:[{t:"changesets/changesets",u:"https://github.com/changesets/changesets",d:"Version management and changelog tool for monorepos. Study how it tracks changes across packages and automates npm releases.",tags:["npm","monorepo","versioning"]},{t:"nicolo-ribaudo/chokidar",u:"https://github.com/paulmillr/chokidar",d:"File watching library — used internally by webpack, nodemon, etc. Study how it abstracts OS-level file events.",tags:["Node.js","file watching","internals"]},{t:"privatenumber/tsx",u:"https://github.com/privatenumber/tsx",d:"Runs TypeScript natively — study how it intercepts Node.js module loading to transpile on demand.",tags:["TypeScript","Node.js","module loading"]}]
+},
+{id:"pip",name:"pip / uv / poetry",emoji:"🐍",type:"tool",days:"1 day",roles:["be","ml","sa"],
+  concepts:{basic:["Virtual environments","requirements.txt","pyproject.toml","uv speed","Poetry groups/extras"],advanced:["Private PyPI","Dependency resolution","Poetry plugins","uv lockfiles"]},
+  docs:[{l:"uv Docs (Astral)",u:"https://docs.astral.sh/uv/"},{l:"Poetry Docs",u:"https://python-poetry.org/docs/"},{l:"pip Docs",u:"https://pip.pypa.io/en/stable/"}],
+  youtube:[{l:"ArjanCodes — Python project setup",u:"https://youtube.com/@ArjanCodes"}],
+  practice:[{l:"Publish a Python library to PyPI",u:"https://packaging.python.org/en/latest/tutorials/packaging-projects/"}],
+  projects:[{t:"mini",n:"Python CLI tool packaged with uv"},{t:"major",n:"Monorepo Python project with Poetry workspaces"}],
+  refs:[{t:"astral-sh/uv",u:"https://github.com/astral-sh/uv",d:"Rust-based pip replacement — 10–100x faster. Study how it reimplements Python packaging using Rust's resolver algorithms.",tags:["Python","Rust","packaging"]},{t:"python-poetry/poetry",u:"https://github.com/python-poetry/poetry",d:"Modern Python packaging. Study the dependency resolver and PEP 517/518 build backend implementation.",tags:["Python","packaging","resolver"]}]
+},
+{id:"vermanagers",name:"mise / asdf / fnm / pyenv",emoji:"🔀",type:"tool",days:"1 day",roles:["all"],
+  concepts:{basic:["Why version managers","mise as universal manager",".tool-versions / .nvmrc","Shims vs PATH manipulation","Global vs local versions"],advanced:["mise plugins","asdf plugin ecosystem","Performance differences","CI/CD version pinning"]},
+  docs:[{l:"mise Docs",u:"https://mise.jdx.dev"},{l:"asdf Docs",u:"https://asdf-vm.com/guide/introduction.html"},{l:"fnm Docs",u:"https://github.com/Schniz/fnm"},{l:"pyenv Docs",u:"https://github.com/pyenv/pyenv"}],
+  youtube:[{l:"Dreams of Code — mise overview",u:"https://youtube.com/@dreamsofcode"}],
+  practice:[{l:"Set up mise to manage all your languages",u:"https://mise.jdx.dev/getting-started.html"}],
+  projects:[{t:"mini",n:"Dotfiles repo with mise + config for all your languages"},{t:"excl",n:"Write a custom mise plugin for a tool not yet supported"}],
+  refs:[{t:"jdx/mise",u:"https://github.com/jdx/mise",d:"Read the shim generation and plugin resolution code. Shows how version managers intercept shell commands to load the right binary.",tags:["Rust","version manager","shims"]},{t:"Schniz/fnm",u:"https://github.com/Schniz/fnm",d:"Fast Node version manager in Rust. Tiny codebase — study how .nvmrc is resolved up the directory tree.",tags:["Rust","Node.js","version manager"]}]
+}
+]},
+{id:"p3",label:"Phase 3 — Build Tools & Linters",items:[
+{id:"buildtools",name:"make / cmake / gradle / mvn",emoji:"🔨",type:"tool",days:"2 days",roles:["be","sa","do"],
+  concepts:{basic:["Makefile syntax & targets","CMakeLists.txt basics","Gradle tasks & plugins","Maven lifecycle","Ninja speed"],advanced:["Incremental builds","Gradle Kotlin DSL","CMake cross-platform","Custom Maven plugins","Dune for OCaml"]},
+  docs:[{l:"GNU Make Manual",u:"https://gnu.org/software/make/manual/"},{l:"CMake Docs",u:"https://cmake.org/documentation/"},{l:"Gradle User Manual",u:"https://docs.gradle.org/current/userguide/userguide.html"},{l:"Makefile Tutorial",u:"https://makefiletutorial.com"}],
+  youtube:[{l:"Fireship — Makefile in 5 minutes",u:"https://youtube.com/watch?v=a8mPKBxQ9No"}],
+  practice:[{l:"makefiletutorial.com",u:"https://makefiletutorial.com"}],
+  projects:[{t:"mini",n:"Polyglot project Makefile (test, build, deploy targets)"},{t:"major",n:"Java microservice with full Gradle build + Docker"}],
+  refs:[{t:"nicowillis/cmake-examples",u:"https://github.com/ttroy50/cmake-examples",d:"Progressive CMake examples from basic to advanced. Best hands-on reference for learning real CMake project structure.",tags:["CMake","C++","examples"]},{t:"gradle/gradle",u:"https://github.com/gradle/gradle",d:"Study the build cache and incremental task execution source. Understanding this makes you a faster build engineer.",tags:["Gradle","Java","build cache"]}]
+},
+{id:"linters",name:"ESLint / Prettier / Ruff / Black",emoji:"✨",type:"tool",days:"1 day",roles:["all"],
+  concepts:{basic:["Linting vs formatting","ESLint flat config","Prettier opinionated formatting","Ruff (Rust-based, fast)","shellcheck for bash","Pre-commit hooks"],advanced:["Custom ESLint plugins","ruff.toml rules","clang-format","gofmt conventions","Trunk unified tooling"]},
+  docs:[{l:"ESLint Docs",u:"https://eslint.org/docs/latest/"},{l:"Prettier Docs",u:"https://prettier.io/docs/en/"},{l:"Ruff Docs",u:"https://docs.astral.sh/ruff/"},{l:"rustfmt Docs",u:"https://rust-lang.github.io/rustfmt/"}],
+  youtube:[{l:"Fireship — ESLint flat config",u:"https://youtube.com/watch?v=mPmhQ4dKa5Y"}],
+  practice:[{l:"Set up a full pre-commit pipeline",u:"https://pre-commit.com"}],
+  projects:[{t:"mini",n:"Unified lint + format script for your entire dev environment"},{t:"excl",n:"Write a custom ESLint plugin that enforces your team's naming conventions"}],
+  refs:[{t:"astral-sh/ruff",u:"https://github.com/astral-sh/ruff",d:"Python linter written in Rust. Study how it implements hundreds of lint rules by walking Python ASTs using Rust — incredible performance engineering.",tags:["Rust","Python","AST","linting"]},{t:"prettier/prettier",u:"https://github.com/prettier/prettier",d:"Read the printer algorithm — it's based on Wadler-Lindig algorithm for pretty-printing. A fascinating CS rabbit hole.",tags:["JavaScript","formatting","algorithms"]},{t:"pre-commit/pre-commit",u:"https://github.com/pre-commit/pre-commit",d:"Multi-language pre-commit hook framework. Study how it manages isolated hook environments and parallel execution.",tags:["Python","git hooks","cross-language"]}]
+}
+]},
+{id:"p4",label:"Phase 4 — Containers & Cloud",items:[
+{id:"docker",name:"Docker / Podman",emoji:"🐳",type:"tool",days:"4 days",roles:["do","be","sa","fs"],
+  concepts:{basic:["Images vs containers","Dockerfile (FROM, RUN, COPY, CMD)","docker compose","Volumes & bind mounts","Networks","Docker Hub registry"],advanced:["Multi-stage builds","BuildKit & cache layers","Rootless Podman","Container security","Distroless images","OCI spec"]},
+  docs:[{l:"Docker Docs",u:"https://docs.docker.com"},{l:"Podman Docs",u:"https://podman.io/docs"},{l:"roadmap.sh — Docker",u:"https://roadmap.sh/docker"},{l:"Docker Cheatsheet",u:"https://dockercheatsheet.com"}],
+  youtube:[{l:"TechWorld with Nana — Docker full course",u:"https://youtube.com/watch?v=3c-iBn73dDE"},{l:"Fireship — Docker in 100 seconds",u:"https://youtube.com/watch?v=Gjnup-PuquQ"},{l:"NetworkChuck — Docker series",u:"https://youtube.com/@NetworkChuck"}],
+  practice:[{l:"Play With Docker (labs)",u:"https://labs.play-with-docker.com"},{l:"KodeKloud Docker",u:"https://kodekloud.com"}],
+  projects:[{t:"mini",n:"Dockerize a multi-service app (backend + DB + cache)"},{t:"major",n:"Multi-stage Dockerfile with health checks + non-root user"},{t:"excl",n:"Container runtime using Linux namespaces + cgroups from scratch"}],
+  refs:[{t:"docker/compose",u:"https://github.com/docker/compose",d:"Read the YAML parsing and service dependency resolution code. Understanding this makes docker-compose.yml second nature.",tags:["Docker","Go","compose"]},{t:"wagoodman/dive",u:"https://github.com/wagoodman/dive",d:"Tool for exploring Docker image layers. Study this to understand exactly how image layers work and how to optimize them.",tags:["Docker","image layers","optimization"]},{t:"nicholasgasior/gsfmt",u:"https://github.com/GoogleContainerTools/distroless",d:"Distroless base images from Google. Study the Dockerfile and why removing a shell reduces attack surface.",tags:["Docker","security","distroless"]},{t:"containers/buildah",u:"https://github.com/containers/buildah",d:"Tool to build OCI images without a daemon. Understand the OCI image spec by studying how buildah constructs layers.",tags:["OCI","rootless","containers"]}]
+},
+{id:"k8s",name:"Kubernetes / Helm",emoji:"⚓",type:"tool",days:"5 days",roles:["do","sa"],
+  concepts:{basic:["Pods, Deployments, Services","ConfigMaps & Secrets","Namespaces","kubectl basics","Helm charts & values"],advanced:["Ingress & cert-manager","RBAC","HPA/VPA","StatefulSets","Operators","Service mesh","kustomize","ArgoCD GitOps"]},
+  docs:[{l:"Kubernetes Official Docs",u:"https://kubernetes.io/docs/home/"},{l:"Helm Docs",u:"https://helm.sh/docs/"},{l:"kubectl cheatsheet",u:"https://kubernetes.io/docs/reference/kubectl/cheatsheet/"},{l:"roadmap.sh — Kubernetes",u:"https://roadmap.sh/kubernetes"}],
+  youtube:[{l:"TechWorld with Nana — K8s full course",u:"https://youtube.com/watch?v=X48VuDVv0do"},{l:"That DevOps Guy — K8s deep dives",u:"https://youtube.com/@MarcelDempers"},{l:"Fireship — Kubernetes in 100 seconds",u:"https://youtube.com/watch?v=PziYflu8cB8"}],
+  practice:[{l:"Killercoda K8s scenarios",u:"https://killercoda.com/playgrounds/scenario/kubernetes"},{l:"Kubernetes the Hard Way",u:"https://github.com/kelseyhightower/kubernetes-the-hard-way"},{l:"CKA exam prep",u:"https://kubernetes.io/training/"}],
+  projects:[{t:"mini",n:"Deploy an app to local k8s (minikube/kind)"},{t:"major",n:"Full GitOps pipeline — ArgoCD + Helm + GitHub Actions"},{t:"excl",n:"Custom Kubernetes operator using controller-runtime"}],
+  refs:[{t:"kelseyhightower/kubernetes-the-hard-way",u:"https://github.com/kelseyhightower/kubernetes-the-hard-way",d:"The definitive K8s learning project. Build a cluster manually to understand every component from etcd to kubelet.",tags:["K8s","from scratch","essential"]},{t:"argoproj/argo-cd",u:"https://github.com/argoproj/argo-cd",d:"GitOps continuous delivery for K8s. Study the reconciliation loop — the same pattern used in all K8s operators.",tags:["K8s","GitOps","operators"]},{t:"helm/helm",u:"https://github.com/helm/helm",d:"Study the chart templating engine and the release state machine in Tiller. Understand how Helm manages K8s resources.",tags:["K8s","Helm","Go"]},{t:"kubernetes/sample-controller",u:"https://github.com/kubernetes/sample-controller",d:"Official sample Kubernetes controller. The simplest possible operator — start here before writing your own CRDs.",tags:["K8s","operator","official"]}]
+},
+{id:"terraform",name:"Terraform",emoji:"🏗️",type:"tool",days:"4 days",roles:["do","sa"],
+  concepts:{basic:["HCL syntax","Providers & resources","State management","Variables & outputs","Modules","Plan/Apply/Destroy"],advanced:["Remote state (S3 backend)","Workspaces","Terragrunt","Atlantis for PRs","Terraform CDK","Drift detection"]},
+  docs:[{l:"Terraform Docs",u:"https://developer.hashicorp.com/terraform/docs"},{l:"Terraform Registry",u:"https://registry.terraform.io"},{l:"roadmap.sh — Terraform",u:"https://roadmap.sh/terraform"}],
+  youtube:[{l:"TechWorld with Nana — Terraform",u:"https://youtube.com/watch?v=l5k1ai_GBDE"},{l:"Anton Babenko — Terraform advanced",u:"https://youtube.com/@AntonBabenko"}],
+  practice:[{l:"Terraform tutorials (official)",u:"https://developer.hashicorp.com/terraform/tutorials"}],
+  projects:[{t:"mini",n:"Provision VPC + EC2 + RDS on AWS"},{t:"major",n:"Full IaC for K8s cluster (EKS + ALB + RDS + S3)"},{t:"excl",n:"Custom Terraform provider for an internal API"}],
+  refs:[{t:"terraform-aws-modules",u:"https://github.com/terraform-aws-modules",d:"The canonical reference for reusable Terraform AWS modules (VPC, EKS, RDS). Study module structure and variable design.",tags:["Terraform","AWS","modules"]},{t:"gruntwork-io/terragrunt",u:"https://github.com/gruntwork-io/terragrunt",d:"Terraform wrapper for DRY configs and remote state management. Study how it solves real problems at scale.",tags:["Terraform","DRY","multi-env"]},{t:"bridgecrewio/checkov",u:"https://github.com/bridgecrewio/checkov",d:"Static analysis for Terraform / Dockerfile / K8s. Study how IaC security policies are implemented as code checks.",tags:["Terraform","security","IaC"]}]
+},
+{id:"aws",name:"AWS",emoji:"☁️",type:"platform",days:"7 days",roles:["do","sa","be"],
+  concepts:{basic:["IAM (users, roles, policies)","EC2 & VPC","S3","RDS / DynamoDB","Lambda","CloudWatch","Route 53"],advanced:["ECS/EKS","CDK","SQS/SNS/EventBridge","API Gateway","CloudFormation","Cost optimization","Well-Architected Framework"]},
+  docs:[{l:"AWS Docs",u:"https://docs.aws.amazon.com"},{l:"AWS Cheatsheets (Tutorialsdojo)",u:"https://tutorialsdojo.com/aws-cheat-sheets/"},{l:"roadmap.sh — AWS",u:"https://roadmap.sh/aws"},{l:"AWS Well-Architected",u:"https://aws.amazon.com/architecture/well-architected/"}],
+  youtube:[{l:"TechWorld with Nana — AWS full course",u:"https://youtube.com/watch?v=RLd_XTyt-w8"},{l:"Be A Better Dev — AWS tutorials",u:"https://youtube.com/@BeABetterDev"},{l:"AWS re:Invent talks",u:"https://youtube.com/@AWSEventsChannel"}],
+  practice:[{l:"AWS Free Tier — hands-on",u:"https://aws.amazon.com/free/"},{l:"AWS Skill Builder",u:"https://skillbuilder.aws"},{l:"A Cloud Guru",u:"https://acloudguru.com"}],
+  projects:[{t:"mini",n:"Serverless API: Lambda + API Gateway + DynamoDB"},{t:"major",n:"3-tier web app: ALB + EC2 ASG + RDS Multi-AZ + CloudFront"},{t:"excl",n:"Event-driven pipeline: S3 → Lambda → SQS → ECS"}],
+  refs:[{t:"open-guides/og-aws",u:"https://github.com/open-guides/og-aws",d:"Community-maintained guide of practical AWS knowledge. Covers gotchas, costs, and best practices not in official docs.",tags:["AWS","community","practical"]},{t:"aws-samples",u:"https://github.com/aws-samples",d:"Official AWS sample repos for every service. The best way to see how AWS services are meant to be combined.",tags:["AWS","official","samples"]},{t:"localstack/localstack",u:"https://github.com/localstack/localstack",d:"Local AWS cloud emulator. Run Lambda, S3, DynamoDB locally for free. Essential for offline development and testing.",tags:["AWS","local dev","testing"]},{t:"serverless/serverless",u:"https://github.com/serverless/serverless",d:"The original serverless framework. Study how it abstracts Lambda + API Gateway + CloudFormation into a clean config.",tags:["AWS","serverless","Lambda"]}]
+},
+{id:"gcloud",name:"Google Cloud",emoji:"🌩️",type:"platform",days:"4 days",roles:["do","sa"],
+  concepts:{basic:["GCE, GCS, Cloud SQL","Cloud Run & Cloud Functions","IAM","GKE","BigQuery"],advanced:["Vertex AI","Pub/Sub","Cloud Build","Anthos","Workload Identity"]},
+  docs:[{l:"GCP Docs",u:"https://cloud.google.com/docs"},{l:"Google Cloud Skills Boost",u:"https://cloudskillsboost.google"},{l:"roadmap.sh — DevOps",u:"https://roadmap.sh/devops"}],
+  youtube:[{l:"TechWorld with Nana — GCP",u:"https://youtube.com/@TechWorldwithNana"},{l:"Google Cloud Tech — official",u:"https://youtube.com/@googlecloudtech"}],
+  practice:[{l:"Google Cloud Skills Boost (Qwiklabs)",u:"https://cloudskillsboost.google"},{l:"GCP Free Tier",u:"https://cloud.google.com/free"}],
+  projects:[{t:"mini",n:"Deploy containerized app to Cloud Run"},{t:"major",n:"GKE cluster + Workload Identity + Cloud SQL + Cloud Armor"},{t:"excl",n:"BigQuery ML — train a model directly in SQL"}],
+  refs:[{t:"GoogleCloudPlatform/python-docs-samples",u:"https://github.com/GoogleCloudPlatform/python-docs-samples",d:"Official GCP Python samples covering every service. Best way to see real SDK usage patterns.",tags:["GCP","Python","official"]},{t:"GoogleCloudPlatform/microservices-demo",u:"https://github.com/GoogleCloudPlatform/microservices-demo",d:"Online boutique e-commerce demo by Google — 10 microservices across Go, Python, Java, Node. Study the GKE + Istio setup.",tags:["GCP","GKE","microservices","polyglot"]}]
+},
+{id:"cicd",name:"CI/CD & Automation",emoji:"🔄",type:"tool",days:"3–4 days",roles:["be","do","fs","sa"],
+  concepts:{basic:["GitHub Actions workflows","Pipeline stages (build, test, deploy)","Secrets management","Artifact storage","Branch protection rules","Jenkins basics","n8n workflow automation"],advanced:["Matrix builds","Self-hosted runners","Jenkins Declarative vs Scripted pipelines","n8n custom nodes","Reusable workflows","Deployment strategies (blue/green, canary)","GitLab CI / CircleCI"]},
+  docs:[{l:"GitHub Actions Docs",u:"https://docs.github.com/actions"},{l:"Jenkins Docs",u:"https://www.jenkins.io/doc/"},{l:"n8n Docs",u:"https://docs.n8n.io"},{l:"roadmap.sh — DevOps",u:"https://roadmap.sh/devops"}],
+  youtube:[{l:"TechWorld with Nana — CI/CD crash course",u:"https://youtube.com/@TechWorldwithNana"},{l:"freeCodeCamp — GitHub Actions full course",u:"https://youtube.com/watch?v=TLB5MY9BBa4"},{l:"Fireship — GitHub Actions in 100 seconds",u:"https://youtube.com/watch?v=eB0nUzAI7M8"}],
+  practice:[{l:"GitHub Actions official tutorials",u:"https://docs.github.com/actions/guides"},{l:"Jenkins getting started",u:"https://www.jenkins.io/doc/pipeline/tour/getting-started/"},{l:"n8n quickstart",u:"https://docs.n8n.io/try-it-out/"}],
+  projects:[{t:"mini",n:"GitHub Actions pipeline: lint → test → Docker build → push to registry"},{t:"major",n:"Jenkins CI/CD for a multi-service app with staging and production environments"},{t:"excl",n:"n8n automation workflow connecting 3+ APIs (e.g. CRM platforms) with error handling, retries, and Slack alerting"}],
+  refs:[{t:"actions/starter-workflows",u:"https://github.com/actions/starter-workflows",d:"Official GitHub Actions starter templates for every language and platform — fastest way to get a real pipeline running.",tags:["GitHub Actions","CI/CD","templates","official"]},{t:"jenkinsci/jenkins",u:"https://github.com/jenkinsci/jenkins",d:"Jenkins source code in Java. Study the plugin architecture and build executor system to understand enterprise CI/CD.",tags:["Jenkins","Java","CI/CD","enterprise"]},{t:"n8n-io/n8n",u:"https://github.com/n8n-io/n8n",d:"Open-source workflow automation tool. Study the node execution model and credential management — perfect for connecting APIs without custom glue code.",tags:["n8n","automation","TypeScript","workflows"]}]
+}
+]},
+{id:"p5",label:"Phase 5 — Terminal & Dev Tools",items:[
+{id:"neovim",name:"Neovim / LazyVim",emoji:"📝",type:"tool",days:"3 days",roles:["all"],
+  concepts:{basic:["Modal editing (hjkl, modes)","Text objects","Buffers, windows, tabs","Lua config basics","LazyVim preset"],advanced:["LSP setup","Treesitter","Telescope","Custom keymaps","nvim-dap debugging","Writing Lua plugins"]},
+  docs:[{l:"Neovim Docs",u:"https://neovim.io/doc/"},{l:"LazyVim Docs",u:"https://lazyvim.org"},{l:"Vim Cheatsheet",u:"https://vim.rtorr.com"},{l:"Kickstart.nvim",u:"https://github.com/nvim-lua/kickstart.nvim"}],
+  youtube:[{l:"The Primeagen — Neovim series",u:"https://youtube.com/@ThePrimeagen"},{l:"TJ DeVries — Neovim core dev",u:"https://youtube.com/@teej_dv"},{l:"Typecraft — Neovim for beginners",u:"https://youtube.com/@typecraft_dev"}],
+  practice:[{l:"vimtutor (:Tutor in nvim)",u:"https://neovim.io"},{l:"vim-adventures.com",u:"https://vim-adventures.com"},{l:"openvim.com",u:"https://openvim.com"}],
+  projects:[{t:"mini",n:"Fully configured Neovim setup committed to dotfiles"},{t:"excl",n:"Write a Neovim plugin in Lua for a workflow you have daily"}],
+  refs:[{t:"nvim-lua/kickstart.nvim",u:"https://github.com/nvim-lua/kickstart.nvim",d:"The official minimal Neovim config starter by TJ DeVries. Read every line — it teaches Lua config, LSP, Treesitter, and Telescope in one file.",tags:["Neovim","Lua","LSP","starter"]},{t:"LazyVim/LazyVim",u:"https://github.com/LazyVim/LazyVim",d:"Feature-complete Neovim config distribution. Study how plugins are lazily loaded and how extras are modularized.",tags:["Neovim","Lua","plugin management"]},{t:"ThePrimeagen/.dotfiles",u:"https://github.com/ThePrimeagen/.dotfiles",d:"The Primeagen's real dotfiles. Study the tmux-sessionizer script and keybindings that have inspired thousands of devs.",tags:["Neovim","tmux","dotfiles"]},{t:"folke/lazy.nvim",u:"https://github.com/folke/lazy.nvim",d:"Modern plugin manager for Neovim. Study how it implements lazy loading using Lua metatables and module hijacking.",tags:["Neovim","Lua","plugin manager"]}]
+},
+{id:"tmux",name:"tmux / terminal tools",emoji:"🖥️",type:"tool",days:"2 days",roles:["be","do","sa"],
+  concepts:{basic:["Sessions, windows, panes","Prefix key","tmux.conf","fzf fuzzy find","rg vs grep","jq JSON querying","starship prompt"],advanced:["tmux-sessionizer script","Persisting sessions","fzf + vim integration","jq advanced filters","Custom starship modules"]},
+  docs:[{l:"tmux Cheatsheet",u:"https://tmuxcheatsheet.com"},{l:"fzf Docs",u:"https://github.com/junegunn/fzf"},{l:"jq Manual",u:"https://jqlang.github.io/jq/manual/"},{l:"starship Docs",u:"https://starship.rs/config/"}],
+  youtube:[{l:"The Primeagen — tmux workflow",u:"https://youtube.com/watch?v=niuOc02Rvrc"},{l:"Dreams of Code — terminal setup",u:"https://youtube.com/@dreamsofcode"}],
+  practice:[{l:"jq play (interactive)",u:"https://jqplay.org"},{l:"vim-adventures.com",u:"https://vim-adventures.com"}],
+  projects:[{t:"mini",n:"tmux sessionizer script bound to a hotkey"},{t:"mini",n:"fzf + rg shell script to search and open files in nvim"},{t:"excl",n:"Custom jq module + starship prompt showing all context (git, k8s, aws profile)"}],
+  refs:[{t:"ThePrimeagen/tmux-sessionizer",u:"https://github.com/ThePrimeagen/.dotfiles/blob/master/bin/.local/scripts/tmux-sessionizer",d:"The iconic tmux-sessionizer script. Combines fzf + tmux to make project switching instant.",tags:["tmux","fzf","workflow"]},{t:"jqlang/jq",u:"https://github.com/jqlang/jq",d:"Read the builtin filter implementations to understand how jq's functional query language is evaluated.",tags:["jq","JSON","C"]},{t:"starship/starship",u:"https://github.com/starship/starship",d:"Cross-shell prompt in Rust. Study the parallel module execution and how it renders the prompt without blocking the shell.",tags:["Rust","prompt","shell"]}]
+},
+{id:"gittools",name:"gh / lazygit",emoji:"🌿",type:"tool",days:"1 day",roles:["all"],
+  concepts:{basic:["gh CLI — PRs, issues, auth","lazygit TUI navigation","gh workflow commands","gh extensions"],advanced:["gh Actions from CLI","lazygit custom commands","gh copilot CLI","gh api scripting"]},
+  docs:[{l:"gh CLI Docs",u:"https://cli.github.com/manual/"},{l:"lazygit Docs",u:"https://github.com/jesseduffield/lazygit"}],
+  youtube:[{l:"Fireship — lazygit overview",u:"https://youtube.com/watch?v=CPLdltN7wgE"}],
+  practice:[{l:"Use gh for all PRs for one week",u:"https://cli.github.com"}],
+  projects:[{t:"mini",n:"Custom gh alias workflow for your PR process"},{t:"excl",n:"gh extension that generates release notes from conventional commits"}],
+  refs:[{t:"jesseduffield/lazygit",u:"https://github.com/jesseduffield/lazygit",d:"Terminal UI for git in Go. Study the key binding system and how complex git operations are composed from atomic commands.",tags:["Go","git","TUI"]},{t:"cli/cli",u:"https://github.com/cli/cli",d:"GitHub's official CLI in Go. Study the auth flow, API pagination, and how terminal output is formatted responsively.",tags:["Go","GitHub","CLI"]}]
+}
+]},
+{id:"p6",label:"Phase 6 — AI / ML Engineering",items:[
+{id:"aiml",name:"AI/ML Foundations",emoji:"🤖",type:"concept",days:"7–10 days",roles:["ml"],
+  concepts:{basic:["Linear algebra & probability","Supervised/Unsupervised learning","Regression & classification","Neural network basics","Gradient descent","NumPy/pandas/matplotlib","scikit-learn"],advanced:["CNNs, RNNs, Transformers","Backpropagation in detail","Regularization","Cross-validation","MLOps basics","Distributed training","Feature engineering"]},
+  docs:[{l:"roadmap.sh — AI/ML Engineer",u:"https://roadmap.sh/ai-data-scientist"},{l:"fast.ai Practical DL (free)",u:"https://course.fast.ai"},{l:"Dive into Deep Learning (D2L)",u:"https://d2l.ai"},{l:"3Blue1Brown — Neural Networks",u:"https://youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi"}],
+  youtube:[{l:"Andrej Karpathy — nn-zero-to-hero",u:"https://youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ"},{l:"Yannic Kilcher — paper explanations",u:"https://youtube.com/@YannicKilcher"},{l:"Sentdex — ML with Python",u:"https://youtube.com/@sentdex"}],
+  practice:[{l:"Kaggle competitions",u:"https://kaggle.com/competitions"},{l:"Hugging Face courses",u:"https://huggingface.co/learn"},{l:"Papers With Code",u:"https://paperswithcode.com"}],
+  projects:[{t:"mini",n:"MNIST classifier from scratch (NumPy only)"},{t:"major",n:"Fine-tune an LLM on custom data with PEFT/LoRA"},{t:"excl",n:"Implement GPT-2 from scratch following Karpathy's tutorial"}],
+  refs:[{t:"karpathy/nanoGPT",u:"https://github.com/karpathy/nanoGPT",d:"Karpathy's clean GPT-2 implementation — ~300 lines of PyTorch. The most important ML repo to read if you want to understand transformers.",tags:["Python","PyTorch","GPT","essential"]},{t:"karpathy/micrograd",u:"https://github.com/karpathy/micrograd",d:"A tiny autograd engine + neural net library in ~150 lines. Best way to understand backprop from first principles.",tags:["Python","autograd","backprop","essential"]},{t:"fastai/fastai",u:"https://github.com/fastai/fastai",d:"High-level DL library built on PyTorch. Study how it wraps complex training loops into clean callback-based APIs.",tags:["Python","PyTorch","deep learning"]},{t:"pytorch/examples",u:"https://github.com/pytorch/examples",d:"Official PyTorch examples for every domain — image classification, NLP, RL, GAN. Canonical patterns for PyTorch code.",tags:["Python","PyTorch","official","examples"]}]
+},
+{id:"llmtools",name:"LLMs & Transformers",emoji:"🧬",type:"tool",days:"5 days",roles:["ml","be"],
+  concepts:{basic:["HuggingFace Transformers API","Tokenization","Inference pipelines","Prompt engineering","RAG","Embeddings & vector DBs"],advanced:["Fine-tuning (LoRA, QLoRA)","LangChain / LlamaIndex","Ollama local models","Evaluation (ROUGE, LLM-as-judge)","Quantization (GGUF)","Agent frameworks","vLLM serving"]},
+  docs:[{l:"HuggingFace Docs",u:"https://huggingface.co/docs"},{l:"LangChain Docs",u:"https://python.langchain.com/docs/introduction/"},{l:"Ollama Docs",u:"https://ollama.ai/docs"},{l:"Anthropic Claude API Docs",u:"https://docs.anthropic.com"},{l:"OpenAI Cookbook",u:"https://cookbook.openai.com"}],
+  youtube:[{l:"Sam Witteveen — LLM engineering",u:"https://youtube.com/@samwitteveenai"},{l:"Andrej Karpathy — Let's build GPT",u:"https://youtube.com/watch?v=kCc8FmEb1nY"},{l:"AI Jason — LangChain",u:"https://youtube.com/@AIJasonZ"}],
+  practice:[{l:"Kaggle LLM competitions",u:"https://kaggle.com"},{l:"LangChain cookbooks",u:"https://github.com/langchain-ai/langchain/tree/master/cookbook"},{l:"Hugging Face spaces",u:"https://huggingface.co/spaces"}],
+  projects:[{t:"mini",n:"Local RAG chatbot with Ollama + ChromaDB"},{t:"major",n:"Document Q&A: ingest PDFs → embed → query with LLM"},{t:"excl",n:"Train a character-level language model from scratch in pure PyTorch"}],
+  refs:[{t:"langchain-ai/langchain",u:"https://github.com/langchain-ai/langchain",d:"The most widely used LLM framework. Study the chain and agent abstractions — even if you use it differently, understanding the pattern is crucial.",tags:["Python","LLM","agents","RAG"]},{t:"chroma-core/chroma",u:"https://github.com/chroma-core/chroma",d:"Embeddable vector database. Study how embeddings are stored and ANN (approximate nearest neighbor) search is implemented.",tags:["Python","vector DB","embeddings"]},{t:"ggerganov/llama.cpp",u:"https://github.com/ggerganov/llama.cpp",d:"Run LLaMA models in pure C/C++. Study the GGUF format and quantization code — this is how local AI actually works under the hood.",tags:["C++","LLM","quantization","local"]},{t:"vllm-project/vllm",u:"https://github.com/vllm-project/vllm",d:"High-throughput LLM inference server using PagedAttention. Study the continuous batching and memory management for serving at scale.",tags:["Python","LLM","serving","PagedAttention"]}]
+},
+{id:"mlops",name:"MLOps / Model Serving",emoji:"⚙️",type:"tool",days:"4 days",roles:["ml","do"],
+  concepts:{basic:["Model versioning (MLflow)","Dataset versioning (DVC)","CI for ML","Containerizing models","FastAPI model serving"],advanced:["Feature stores","A/B testing models","Model monitoring + drift","GPU on K8s","Triton Inference Server","BentoML / Ray Serve"]},
+  docs:[{l:"MLflow Docs",u:"https://mlflow.org/docs/latest/"},{l:"DVC Docs",u:"https://dvc.org/doc"},{l:"BentoML Docs",u:"https://docs.bentoml.com"},{l:"roadmap.sh — MLOps",u:"https://roadmap.sh/mlops"}],
+  youtube:[{l:"Made With ML — MLOps course (free)",u:"https://madewithml.com"},{l:"Kurtis Pykes — MLOps series",u:"https://youtube.com/@kurtispykes"}],
+  practice:[{l:"Made With ML full course",u:"https://madewithml.com"},{l:"Full Stack Deep Learning",u:"https://fullstackdeeplearning.com"}],
+  projects:[{t:"mini",n:"MLflow experiment tracking for a classification model"},{t:"major",n:"E2E ML pipeline: versioning + training + serving + monitoring"},{t:"excl",n:"Custom Triton backend for a model needing special preprocessing"}],
+  refs:[{t:"mlflow/mlflow",u:"https://github.com/mlflow/mlflow",d:"MLflow experiment tracking. Study the run/artifact storage model and how it integrates with PyTorch, scikit-learn, and Keras.",tags:["Python","MLOps","experiment tracking"]},{t:"iterative/dvc",u:"https://github.com/iterative/dvc",d:"Git for datasets and models. Study how it extends git with content-addressable storage for large binary files.",tags:["Python","data versioning","git"]},{t:"ray-project/ray",u:"https://github.com/ray-project/ray",d:"Distributed computing framework used for ML training and serving. Study the actor model and the Serve module for scalable model deployment.",tags:["Python","distributed","ML serving"]},{t:"bentoml/bentoml",u:"https://github.com/bentoml/bentoml",d:"Model packaging and serving framework. Study how it standardizes the interface between training code and production deployment.",tags:["Python","model serving","packaging"]}]
+}
+]},
+{id:"p7",label:"Phase 7 — System Design",items:[
+{id:"sd_fundamentals",name:"SD Fundamentals",emoji:"🏗️",type:"concept",days:"7–10 days",roles:["be","fs","sa","do"],
+  concepts:{basic:["Client-server model","Horizontal vs vertical scaling","Stateless vs stateful services","Load balancers (L4/L7)","Caching (CDN, Redis)","SQL vs NoSQL","CAP theorem"],advanced:["Consistent hashing","Quorum reads/writes","Vector clocks","Two-phase commit","Distributed transactions","Shard strategies","Tail latency & percentiles"]},
+  docs:[{l:"system-design-primer",u:"https://github.com/donnemartin/system-design-primer"},{l:"ByteByteGo Newsletter",u:"https://blog.bytebytego.com"},{l:"High Scalability Blog",u:"https://highscalability.com"},{l:"Martin Fowler Patterns",u:"https://martinfowler.com/architecture/"}],
+  youtube:[{l:"ByteByteGo — System Design playlist",u:"https://youtube.com/@ByteByteGo"},{l:"Gaurav Sen — System Design",u:"https://youtube.com/@gkcs"},{l:"Hussein Nasser — Backend Engineering",u:"https://youtube.com/@hnasr"},{l:"KRAZAM — latency numbers",u:"https://youtube.com/watch?v=FqR5vESuKe0"}],
+  practice:[{l:"System Design Interview questions list",u:"https://github.com/checkcheckzz/system-design-interview"},{l:"Pramp — mock interviews",u:"https://pramp.com"},{l:"Interviewing.io — system design",u:"https://interviewing.io"}],
+  projects:[{t:"mini",n:"Design a URL shortener on paper — define APIs, schema, and scaling plan"},{t:"major",n:"Implement a consistent-hash ring in code and benchmark it"},{t:"excl",n:"Build a mini distributed key-value store with replication + quorum reads (Raft optional)"}],
+  refs:[{t:"donnemartin/system-design-primer",u:"https://github.com/donnemartin/system-design-primer",d:"The most comprehensive system design study resource. Covers every concept with diagrams, trade-offs, and real-world examples.",tags:["system design","fundamentals","interviews"]},{t:"binhnguyennus/awesome-scalability",u:"https://github.com/binhnguyennus/awesome-scalability",d:"Curated articles and papers on scalability, availability, and performance from top-tier companies.",tags:["scalability","architecture","papers"]},{t:"karanpratapsingh/system-design",u:"https://github.com/karanpratapsingh/system-design",d:"Full free system design course in markdown. Excellent structure from basics to full design walkthroughs.",tags:["system design","free course","comprehensive"]}]
+},
+{id:"sd_databases",name:"Database Internals",emoji:"🗃️",type:"concept",days:"5–7 days",roles:["be","sa","fs"],
+  concepts:{basic:["B-Tree vs LSM-tree","Read/write amplification","WAL (Write-Ahead Log)","Compaction","Bloom filters","MVCC","Snapshot isolation"],advanced:["Column-oriented storage","Vectorized execution","Cost-based query planners","Distributed SQL (Spanner, CockroachDB)","Time-series optimizations","Operational vs analytical workloads","Change data capture (CDC)"]},
+  docs:[{l:"Designing Data-Intensive Applications (DDIA)",u:"https://dataintensive.net"},{l:"CMU Database Course (free)",u:"https://15445.courses.cs.cmu.edu"},{l:"DynamoDB paper",u:"https://www.allthingsdistributed.com/files/amazon-dynamo-sosp2007.pdf"},{l:"Cassandra Architecture Docs",u:"https://cassandra.apache.org/doc/latest/architecture/"}],
+  youtube:[{l:"CMU 15-445 lectures",u:"https://youtube.com/@CMUDatabaseGroup"},{l:"Hussein Nasser — DB internals",u:"https://youtube.com/@hnasr"},{l:"Alex Xu — Database design",u:"https://youtube.com/@ByteByteGo"}],
+  practice:[{l:"Build your own DB (Codecrafters)",u:"https://codecrafters.io/challenges/sqlite"},{l:"pgexercises.com",u:"https://pgexercises.com"},{l:"Use EXPLAIN ANALYZE on real queries",u:"https://explain.dalibo.com"}],
+  projects:[{t:"mini",n:"Implement a log-structured key-value store (bitcask style)"},{t:"major",n:"Write a minimal B-tree that supports insert/search/delete"},{t:"excl",n:"Build a WAL-backed key-value store with crash recovery"}],
+  refs:[{t:"pingcap/talent-plan",u:"https://github.com/pingcap/talent-plan",d:"TiKV's distributed systems courses — build your own Raft and distributed KV store step by step. Industry gold.",tags:["Rust","Raft","distributed","KV store"]},{t:"skyzh/mini-lsm",u:"https://github.com/skyzh/mini-lsm",d:"Build an LSM-tree storage engine from scratch in Rust. Exceptional walkthrough of RocksDB-style internals.",tags:["Rust","LSM-tree","storage engine"]},{t:"cmu-db/bustub",u:"https://github.com/cmu-db/bustub",d:"CMU's teaching database. Implement buffer pool, B+ tree, query execution, and concurrency control as homework assignments.",tags:["C++","B-tree","database","CMU"]}]
+},
+{id:"sd_caching",name:"Caching & CDN",emoji:"⚡",type:"concept",days:"3–4 days",roles:["be","fs","do"],
+  concepts:{basic:["Cache-aside, read-through, write-through","TTL & eviction (LRU, LFU)","Redis data structures","Cache stampede / thundering herd","CDN edge caching","Varnish & HTTP caching headers"],advanced:["Redis Cluster & Sentinel","Cache warming strategies","Probabilistic early expiration","Consistent hashing for cache sharding","Memcached vs Redis trade-offs","In-process caches (Caffeine, Guava)","Hotspot / skewed key problems"]},
+  docs:[{l:"Redis Architecture Docs",u:"https://redis.io/docs/latest/operate/oss_and_stack/reference/architecture/"},{l:"Cloudflare CDN Docs",u:"https://developers.cloudflare.com/cache/"},{l:"AWS ElastiCache Best Practices",u:"https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/best-practices.html"}],
+  youtube:[{l:"ByteByteGo — Caching strategies",u:"https://youtube.com/watch?v=dGAgxozNWFE"},{l:"Gaurav Sen — Caching in system design",u:"https://youtube.com/watch?v=U3RkDLtS7uY"},{l:"Hussein Nasser — Redis deep dive",u:"https://youtube.com/@hnasr"}],
+  practice:[{l:"Redis University (free courses)",u:"https://university.redis.io"},{l:"Build LRU Cache — LeetCode 146",u:"https://leetcode.com/problems/lru-cache/"},{l:"Implement TTL cache from scratch",u:"https://github.com"}],
+  projects:[{t:"mini",n:"Redis-backed session store with expiry + invalidation"},{t:"major",n:"Rate limiter using Redis sliding window or token bucket"},{t:"excl",n:"Local write-through in-memory cache with eventual Postgres sync"}],
+  refs:[{t:"redis/redis",u:"https://github.com/redis/redis",d:"Read the ae.c event loop and dict.c hash table source. Explains why Redis is single-threaded yet so fast.",tags:["C","Redis","event loop","internals"]},{t:"ben-manes/caffeine",u:"https://github.com/ben-manes/caffeine",d:"High-performance Java in-process cache. Implements W-TinyLFU policy — exceptional reading on eviction algorithms.",tags:["Java","cache","TinyLFU","eviction"]}]
+},
+{id:"sd_messaging",name:"Messaging & Queues",emoji:"📨",type:"concept",days:"4–5 days",roles:["be","do","fs"],
+  concepts:{basic:["Message queues vs pub-sub","Kafka topics, partitions, offsets","Consumer groups","At-least-once vs exactly-once delivery","Dead-letter queues","RabbitMQ exchanges & bindings"],advanced:["Kafka log compaction","Kafka Streams vs Flink","Backpressure","CQRS + Event Sourcing","Outbox pattern","Saga pattern","Transactional messaging"]},
+  docs:[{l:"Kafka Documentation",u:"https://kafka.apache.org/documentation/"},{l:"RabbitMQ Docs",u:"https://rabbitmq.com/documentation.html"},{l:"AWS SQS Best Practices",u:"https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/best-practices.html"},{l:"Designing Event-Driven Systems (free book)",u:"https://www.confluent.io/designing-event-driven-systems/"}],
+  youtube:[{l:"ByteByteGo — Kafka explained",u:"https://youtube.com/watch?v=Ch5VhJzaoaI"},{l:"Confluent — Kafka fundamentals",u:"https://youtube.com/playlist?list=PLa7VYi0yPIH0KbnJQcMv5N9iW8HkZHztH"},{l:"IBM Tech — Message queues",u:"https://youtube.com/watch?v=xErwDaOc-Gs"}],
+  practice:[{l:"Conduktor Kafka playground",u:"https://conduktor.io"},{l:"Kafka quickstart (local Docker)",u:"https://kafka.apache.org/quickstart"},{l:"Codecrafters — Build Kafka",u:"https://codecrafters.io"}],
+  projects:[{t:"mini",n:"Produce & consume events with Kafka — order placed → inventory updated"},{t:"major",n:"CQRS order service: commands via REST, events via Kafka, reads from read model"},{t:"excl",n:"Implement the Outbox pattern with Debezium CDC to guarantee exactly-once delivery"}],
+  refs:[{t:"confluentinc/kafka",u:"https://github.com/apache/kafka",d:"The Kafka source code. Study the log segment append path and the controller election — core Kafka guarantees live here.",tags:["Java","Kafka","distributed log"]},{t:"supabase/realtime",u:"https://github.com/supabase/realtime",d:"Postgres-backed pub/sub using logical replication. Elegant example of event streaming without a full Kafka setup.",tags:["Elixir","Postgres","CDC","pub-sub"]},{t:"EventStore/EventStore",u:"https://github.com/EventStore/EventStoreDB-Client-SDK-Dotnet",d:"Purpose-built event sourcing database. Study how append-only event logs replace traditional mutable state.",tags:["event sourcing","CQRS","append-only"]}]
+},
+{id:"sd_api_design",name:"API Design",emoji:"🔌",type:"concept",days:"3–4 days",roles:["be","fs","all"],
+  concepts:{basic:["REST principles & constraints","OpenAPI / Swagger spec","Versioning strategies","HTTP status codes & idempotency","Pagination (cursor vs offset)","Rate limiting"],advanced:["gRPC & Protobuf","GraphQL & DataLoader","API gateway patterns","BFF (Backend for Frontend)","Hypermedia (HATEOAS)","Webhooks vs polling","API security (OAuth2, PKCE)"]},
+  docs:[{l:"OpenAPI Specification",u:"https://spec.openapis.org/oas/latest.html"},{l:"Google API Design Guide",u:"https://cloud.google.com/apis/design"},{l:"gRPC Docs",u:"https://grpc.io/docs/"},{l:"GraphQL Spec",u:"https://spec.graphql.org"}],
+  youtube:[{l:"Fireship — REST vs GraphQL vs gRPC",u:"https://youtube.com/watch?v=dQw4w9WgXcQ"},{l:"ByteByteGo — API design best practices",u:"https://youtube.com/watch?v=_YlYuNMTCc8"},{l:"Hussein Nasser — gRPC deep dive",u:"https://youtube.com/@hnasr"}],
+  practice:[{l:"Postman learning center",u:"https://learning.postman.com"},{l:"APIs.guru — real OpenAPI specs",u:"https://apis.guru"},{l:"GraphQL tutorials",u:"https://graphql.org/learn/"}],
+  projects:[{t:"mini",n:"Design a RESTful API with OpenAPI spec-first (generate server stubs)"},{t:"major",n:"GraphQL API with DataLoader to solve N+1 on a relational dataset"},{t:"excl",n:"gRPC bidirectional streaming service (e.g., live order tracking or chat)"}],
+  refs:[{t:"microsoft/api-guidelines",u:"https://github.com/microsoft/api-guidelines",d:"Microsoft's internal API design guidelines made public. Gold standard for REST consistency, naming, and versioning.",tags:["REST","API","guidelines","enterprise"]},{t:"graphql/graphql-spec",u:"https://github.com/graphql/graphql-spec",d:"The official GraphQL specification. Read it to understand execution semantics, type system rules, and directives deeply.",tags:["GraphQL","spec","authoritative"]},{t:"grpc/grpc",u:"https://github.com/grpc/grpc",d:"Study the protocol buffer serialization path and HTTP/2 multiplexing code to understand why gRPC is faster than REST for high-throughput internal APIs.",tags:["gRPC","C++","protobuf","HTTP/2"]}]
+},
+{id:"sd_microservices",name:"Microservices & Patterns",emoji:"🧩",type:"concept",days:"5–7 days",roles:["be","do","fs"],
+  concepts:{basic:["Monolith → microservices decomposition","Domain-Driven Design (DDD) basics","Service registry & discovery","Circuit breakers (Hystrix/Resilience4j)","Service mesh basics","API Gateway vs BFF"],advanced:["Saga (choreography vs orchestration)","Event sourcing","Strangler fig pattern","CQRS","Multi-tenancy strategies","Observability: traces, metrics, logs (OTel)","Blue/green & canary deployments"]},
+  docs:[{l:"Microservices.io patterns",u:"https://microservices.io/patterns"},{l:"Martin Fowler — Microservices",u:"https://martinfowler.com/articles/microservices.html"},{l:"OpenTelemetry Docs",u:"https://opentelemetry.io/docs/"},{l:"Istio Docs",u:"https://istio.io/latest/docs/"}],
+  youtube:[{l:"TechWorld with Nana — Microservices",u:"https://youtube.com/@TechWorldwithNana"},{l:"Sam Newman — Building Microservices talks",u:"https://youtube.com/results?search_query=sam+newman+microservices"},{l:"ByteByteGo — Service mesh explained",u:"https://youtube.com/@ByteByteGo"}],
+  practice:[{l:"Istio in practice (Google Codelabs)",u:"https://codelabs.developers.google.com"},{l:"DDD Starter Modelling Process",u:"https://github.com/ddd-crew/ddd-starter-modelling-process"},{l:"Event Storming guide",u:"https://www.eventstorming.com"}],
+  projects:[{t:"mini",n:"Decompose a monolith into 3 bounded-context services communicating via REST"},{t:"major",n:"Saga orchestration for a checkout flow: payment → inventory → notification"},{t:"excl",n:"Full OpenTelemetry instrumentation across a microservices app with Jaeger trace visualization"}],
+  refs:[{t:"GoogleCloudPlatform/microservices-demo",u:"https://github.com/GoogleCloudPlatform/microservices-demo",d:"Google's 10-microservice online boutique. Study the polyglot setup, gRPC contracts, and Kubernetes manifests.",tags:["GKE","gRPC","polyglot","reference"]},{t:"dotnet-architecture/eShopOnContainers",u:"https://github.com/dotnet-architecture/eShopOnContainers",d:"Microsoft's reference microservices app. Excellent for CQRS, event bus, domain events, and DDD patterns in .NET.",tags:["dotnet","DDD","CQRS","event bus"]},{t:"ddd-crew/ddd-starter-modelling-process",u:"https://github.com/ddd-crew/ddd-starter-modelling-process",d:"Practical guide to domain-driven design — from understanding the domain to defining bounded contexts and aggregates.",tags:["DDD","bounded context","modelling"]}]
+},
+{id:"sd_interviews",name:"SD Interview Prep",emoji:"🎯",type:"practice",days:"7–14 days",roles:["be","fs","do","sa"],
+  concepts:{basic:["RADIO framework (Requirements, API, Data, Implementation, Optimise)","Capacity estimation (QPS, storage math)","Draw the diagram habit","Clarify before designing","Communicate trade-offs"],advanced:["Design URL shortener","Design Twitter timeline","Design distributed rate limiter","Design notification system","Design ride-sharing matching","Design distributed cache","Design search autocomplete"]},
+  docs:[{l:"Alex Xu — System Design Interview Vol 1 (buy)",u:"https://bytebytego.com"},{l:"System Design Primer",u:"https://github.com/donnemartin/system-design-primer"},{l:"Jordan has no life — YT playlist",u:"https://youtube.com/@jordanhasnolife5163"},{l:"Exponent — SD interview guide",u:"https://tryexponent.com/courses/system-design"}],
+  youtube:[{l:"ByteByteGo — full design walkthroughs",u:"https://youtube.com/@ByteByteGo"},{l:"Jordan has no life — SD videos",u:"https://youtube.com/@jordanhasnolife5163"},{l:"Gaurav Sen — design interviews",u:"https://youtube.com/@gkcs"},{l:"Clement Mihailescu — SD tips",u:"https://youtube.com/@AlgoExpert"}],
+  practice:[{l:"Pramp — free mock interviews",u:"https://pramp.com"},{l:"Interviewing.io — SD mocks",u:"https://interviewing.io"},{l:"DesignGurus.io",u:"https://designgurus.io"}],
+  projects:[{t:"mini",n:"Complete 5 system design write-ups (URL shortener, pastebin, rate limiter, chat, feed)"},{t:"major",n:"Record yourself doing a 45-min system design mock and review it"},{t:"excl",n:"Build a working prototype of one design you studied (e.g., URL shortener with Postgres + Redis + consistent hash routing)"}],
+  refs:[{t:"donnemartin/system-design-primer",u:"https://github.com/donnemartin/system-design-primer",d:"The most-starred system design resource on GitHub. A must-read before any system design interview.",tags:["system design","interviews","fundamentals"]},{t:"checkcheckzz/system-design-interview",u:"https://github.com/checkcheckzz/system-design-interview",d:"Curated company-specific system design questions (Google, Facebook, Uber, etc.) with links to engineering blogs.",tags:["interviews","company-specific","reading list"]},{t:"ashishps1/awesome-system-design-resources",u:"https://github.com/ashishps1/awesome-system-design-resources",d:"Comprehensive, up-to-date collection of system design resources, real-world engineering blog posts, and templates.",tags:["system design","resources","templates"]}]
+}
+]},
+{id:"p8",label:"🏅 Certifications",items:[
+{id:"cert_aws",name:"AWS Certifications",emoji:"☁️",type:"certification",days:"30–90 days",roles:["be","do","sa","fs"],
+  concepts:{basic:["AWS Cloud Practitioner — entry-level, $100, free prep via AWS Skill Builder","AWS Solutions Architect Associate — most hired cert, $150","AWS Developer Associate — best for backend devs, $150"],advanced:["AWS Solutions Architect Professional — advanced, $300","AWS DevOps Engineer Professional — CI/CD + IaC focus","AWS Security Specialty — high-value niche cert"]},
+  docs:[{l:"AWS Certification Official Page",u:"https://aws.amazon.com/certification/"},{l:"AWS Skill Builder (free tier)",u:"https://skillbuilder.aws"},{l:"AWS Free Tier — practice hands-on",u:"https://aws.amazon.com/free/"},{l:"AWS Workshops (free, hands-on labs)",u:"https://workshops.aws"}],
+  youtube:[{l:"freeCodeCamp — AWS Cloud Practitioner full course",u:"https://youtube.com/watch?v=SOTamWNgDKc"},{l:"freeCodeCamp — AWS SAA full course",u:"https://youtube.com/watch?v=c3Cn4xYfxJY"},{l:"TechWorld with Nana — AWS basics",u:"https://youtube.com/@TechWorldwithNana"},{l:"Adrian Cantrill — AWS courses (paid but best quality)",u:"https://learn.cantrill.io"}],
+  practice:[{l:"Tutorials Dojo practice exams (best $10 spend)",u:"https://portal.tutorialsdojo.com"},{l:"ExamTopics — free practice questions",u:"https://examtopics.com"},{l:"CloudGuru hands-on labs",u:"https://learn.acloud.guru"},{l:"AWS Skill Builder official practice",u:"https://skillbuilder.aws"}],
+  projects:[{t:"mini",n:"Deploy a 3-tier app on AWS (S3 + API Gateway + Lambda + RDS)"},{t:"major",n:"Build a full CI/CD pipeline using CodePipeline + ECS + RDS with IaC (CDK or Terraform)"},{t:"excl",n:"Multi-region HA architecture with Route53 failover, Aurora Global, and WAF"}],
+  refs:[{t:"acantril/learn-cantrill-io-labs",u:"https://github.com/acantril/learn-cantrill-io-labs",d:"Free companion labs for Adrian Cantrill's AWS courses. Hands-on infrastructure you build and tear down on real AWS.",tags:["AWS","labs","hands-on","free"]},{t:"aws/aws-cdk",u:"https://github.com/aws/aws-cdk",d:"AWS Cloud Development Kit. Study constructs to understand how infrastructure-as-code is abstracted at L1/L2/L3 levels.",tags:["AWS","CDK","IaC","TypeScript"]},{t:"open-guides/og-aws",u:"https://github.com/open-guides/og-aws",d:"Community-maintained guide of practical AWS tips, gotchas, and best practices beyond what the official docs say.",tags:["AWS","practical","community","ops"]}]
+},
+{id:"cert_gcp",name:"GCP Certifications",emoji:"🌩️",type:"certification",days:"30–60 days",roles:["be","do","sa","ml"],
+  concepts:{basic:["Google Associate Cloud Engineer — $200, closest to AWS SAA","Google Professional Data Engineer — top cert for ML/data roles","Google Professional Cloud Architect — senior-level, highly valued"],advanced:["Google Professional ML Engineer — ML deployment & MLOps focus","Google Professional Cloud DevOps Engineer","Google Cloud Security Engineer"]},
+  docs:[{l:"Google Cloud Certification Page",u:"https://cloud.google.com/certification"},{l:"Google Cloud Skills Boost (free tier)",u:"https://cloudskillsboost.google"},{l:"Google Cloud Free Tier",u:"https://cloud.google.com/free"},{l:"Google Cloud Architecture Center",u:"https://cloud.google.com/architecture"}],
+  youtube:[{l:"freeCodeCamp — GCP Associate Cloud Engineer",u:"https://youtube.com/watch?v=jpno8FSqpc8"},{l:"TechWorld with Nana — GCP overview",u:"https://youtube.com/@TechWorldwithNana"},{l:"Google Cloud Tech YouTube",u:"https://youtube.com/@googlecloudtech"}],
+  practice:[{l:"Google Cloud Skills Boost — free labs with credits",u:"https://cloudskillsboost.google"},{l:"Whizlabs GCP practice exams",u:"https://whizlabs.com"},{l:"ExamTopics GCP",u:"https://examtopics.com"}],
+  projects:[{t:"mini",n:"Deploy a containerized app to Cloud Run with CI/CD via Cloud Build"},{t:"major",n:"BigQuery data pipeline: GCS → Dataflow → BigQuery → Looker dashboard"},{t:"excl",n:"Vertex AI ML pipeline: data → train → evaluate → deploy → monitor"}],
+  refs:[{t:"GoogleCloudPlatform/professional-services",u:"https://github.com/GoogleCloudPlatform/professional-services",d:"GCP Professional Services team's reference code for real customer implementations.",tags:["GCP","reference","professional"]},{t:"GoogleCloudPlatform/generative-ai",u:"https://github.com/GoogleCloudPlatform/generative-ai",d:"Official samples for Vertex AI, Gemini, and ML on GCP. Essential for Professional ML Engineer prep.",tags:["GCP","Vertex AI","ML","GenAI"]}]
+},
+{id:"cert_cka",name:"Kubernetes (CKA/CKAD)",emoji:"⎈",type:"certification",days:"30–60 days",roles:["do","be","sa"],
+  concepts:{basic:["CKA — Certified Kubernetes Administrator — $395, most valued DevOps cert","CKAD — Certified Kubernetes Application Developer — developer-focused, $395","CKS — Certified Kubernetes Security Specialist — advanced, requires CKA first"],advanced:["Exam is hands-on (no MCQ) — 2 hour terminal session","Focus: pod scheduling, RBAC, networking, storage, cluster upgrades","Practice speed — exam requires fast kubectl muscle memory"]},
+  docs:[{l:"CNCF Certification Page",u:"https://training.linuxfoundation.org/certification/"},{l:"Kubernetes Official Docs (your exam companion)",u:"https://kubernetes.io/docs/"},{l:"killer.sh — official exam simulator",u:"https://killer.sh"},{l:"Kubernetes the Hard Way",u:"https://github.com/kelseyhightower/kubernetes-the-hard-way"}],
+  youtube:[{l:"TechWorld with Nana — Kubernetes complete course",u:"https://youtube.com/watch?v=X48VuDVv0do"},{l:"freeCodeCamp — CKA full course",u:"https://youtube.com/watch?v=d6wejUee2As"},{l:"Mumshad Mannambeth — CKA tips",u:"https://youtube.com/@mmumshad"}],
+  practice:[{l:"killer.sh — 2 free simulators with exam purchase",u:"https://killer.sh"},{l:"KodeKloud CKA practice (best paid resource)",u:"https://kodekloud.com"},{l:"Killercoda free K8s labs",u:"https://killercoda.com/killer-shell-cka"},{l:"k8s.io interactive tutorials",u:"https://kubernetes.io/docs/tutorials/"}],
+  projects:[{t:"mini",n:"Deploy a multi-service app on a local K8s cluster (kind/minikube) with ConfigMaps + Secrets + Services"},{t:"major",n:"Kubernetes the Hard Way — provision a cluster from scratch on bare VMs"},{t:"excl",n:"Build a GitOps pipeline: ArgoCD watches a git repo and auto-syncs K8s manifests with rollback support"}],
+  refs:[{t:"kelseyhightower/kubernetes-the-hard-way",u:"https://github.com/kelseyhightower/kubernetes-the-hard-way",d:"The iconic guide to bootstrapping Kubernetes manually. Every CKA candidate should do this at least once.",tags:["Kubernetes","CKA","hard-way","fundamentals"]},{t:"dgkanatsios/CKAD-exercises",u:"https://github.com/dgkanatsios/CKAD-exercises",d:"Community practice exercises for the CKAD exam. Work through all of them multiple times until they're fast.",tags:["CKAD","exercises","practice"]},{t:"walidshaari/Kubernetes-Certified-Administrator",u:"https://github.com/walidshaari/Kubernetes-Certified-Administrator",d:"CKA study guide mapping every exam objective to official Kubernetes docs. Use this for structured revision.",tags:["CKA","study guide","objectives"]}]
+},
+{id:"cert_terraform",name:"HashiCorp Terraform",emoji:"🌍",type:"certification",days:"14–30 days",roles:["do","sa","be"],
+  concepts:{basic:["Terraform Associate — $70.50, most practical IaC cert","Covers: HCL syntax, providers, state, modules, backends","Highly valued for any DevOps/Platform/SRE role"],advanced:["Terraform Cloud / Sentinel policy","Remote state with locking","Module registry and versioning","Terraform CDK (CDKTF)"]},
+  docs:[{l:"HashiCorp Terraform Associate Exam",u:"https://developer.hashicorp.com/certifications/infrastructure-automation"},{l:"Terraform Official Docs",u:"https://developer.hashicorp.com/terraform/docs"},{l:"HashiCorp Learn (free, interactive)",u:"https://developer.hashicorp.com/terraform/tutorials"},{l:"Terraform Registry",u:"https://registry.terraform.io"}],
+  youtube:[{l:"freeCodeCamp — Terraform full course",u:"https://youtube.com/watch?v=SLB_c_ayRMo"},{l:"TechWorld with Nana — Terraform crash course",u:"https://youtube.com/@TechWorldwithNana"},{l:"Anton Babenko — Terraform deep dives",u:"https://youtube.com/@antonbabenko"}],
+  practice:[{l:"HashiCorp free interactive tutorials",u:"https://developer.hashicorp.com/terraform/tutorials"},{l:"Spacelift Terraform practice exam",u:"https://spacelift.io/blog/terraform-associate-exam"},{l:"ExamTopics Terraform Associate",u:"https://examtopics.com"}],
+  projects:[{t:"mini",n:"Provision a complete AWS VPC + EC2 + RDS using Terraform modules"},{t:"major",n:"Multi-environment Terraform project (dev/staging/prod) with remote state in S3 + DynamoDB locking"},{t:"excl",n:"Custom Terraform provider in Go that manages a REST API resource"}],
+  refs:[{t:"hashicorp/terraform",u:"https://github.com/hashicorp/terraform",d:"Terraform source code in Go. Study the graph execution engine and provider plugin protocol.",tags:["Go","IaC","Terraform","internals"]},{t:"antonbabenko/terraform-best-practices",u:"https://github.com/antonbabenko/terraform-best-practices",d:"Community best practices for structuring real-world Terraform projects with modules, environments, and state.",tags:["Terraform","best practices","modules"]},{t:"terraform-aws-modules",u:"https://github.com/terraform-aws-modules",d:"Community-maintained, production-grade Terraform modules for AWS (VPC, EKS, RDS, etc.). Study the module structure.",tags:["Terraform","AWS","modules","production"]}]
+},
+{id:"cert_free",name:"Free / Low-Cost Certs",emoji:"🆓",type:"certification",days:"7–30 days",roles:["all"],
+  concepts:{basic:["GitHub Actions — GitHub Certifications ($49 each, very recognized)","Google Cloud free digital badges — via Skills Boost","Meta Front-End Developer — Coursera (auditable free)","IBM Data Science Professional — Coursera (auditable free)"],advanced:["Linux Foundation LFCA — $200, entry SysAdmin cert","MongoDB Associate Developer — free exam, highly practical","Redis Developer Certification — free exam at Redis University","Postman API Fundamentals — completely free badge"]},
+  docs:[{l:"GitHub Certifications",u:"https://examregistration.github.com"},{l:"Google Cloud Skills Boost (free badges)",u:"https://cloudskillsboost.google"},{l:"MongoDB University (free courses + exam)",u:"https://learn.mongodb.com"},{l:"Redis University (free courses + cert)",u:"https://university.redis.io"},{l:"Postman Certification",u:"https://academy.postman.com"},{l:"Meta Professional Certs (Coursera)",u:"https://coursera.org/professional-certificates/meta-front-end-developer"}],
+  youtube:[{l:"freeCodeCamp — GitHub Actions full course",u:"https://youtube.com/watch?v=TLB5MY9BBa4"},{l:"freeCodeCamp — MongoDB full course",u:"https://youtube.com/watch?v=c2M-rlkkT5o"}],
+  practice:[{l:"MongoDB University practice assessments",u:"https://learn.mongodb.com"},{l:"Redis University free courses",u:"https://university.redis.io"},{l:"GitHub Skills (free interactive courses)",u:"https://skills.github.com"}],
+  projects:[{t:"mini",n:"Complete a Google Cloud Skills Boost quest and earn a free badge"},{t:"mini",n:"Pass the MongoDB Atlas free developer certification"},{t:"major",n:"Build a project that earns you GitHub Actions, MongoDB, and Postman certifications in one app"},{t:"excl",n:"Complete the full GitHub Foundations + Actions + Advanced Security certification track"}],
+  refs:[{t:"skills.github.com (GitHub Skills)",u:"https://github.com/skills",d:"Official GitHub interactive learning paths — free, browser-based, and counts toward GitHub Foundations cert prep.",tags:["GitHub","free","interactive","CI/CD"]},{t:"mongodb-developer/mongodb-developer-certification",u:"https://github.com/mongodb-developer",d:"MongoDB's official developer resources and sample code aligned with their certification track.",tags:["MongoDB","free cert","developer"]}]
+},
+{id:"cert_ml",name:"ML / AI Certifications",emoji:"🤖",type:"certification",days:"30–90 days",roles:["ml","be"],
+  concepts:{basic:["TensorFlow Developer Certificate — $100, Google-backed, highly practical","AWS ML Specialty — $300, best for ML engineers in cloud","DeepLearning.AI specializations — Coursera (auditable free, $49/month for cert)"],advanced:["Google Professional ML Engineer — $200, best ML cert overall","Hugging Face free NLP course — no formal cert but recognized in industry","fast.ai Practical Deep Learning — not certified but deeply respected by hiring teams"]},
+  docs:[{l:"TensorFlow Developer Certification",u:"https://tensorflow.org/certificate"},{l:"DeepLearning.AI Courses (Coursera)",u:"https://deeplearning.ai/courses/"},{l:"AWS ML Specialty",u:"https://aws.amazon.com/certification/certified-machine-learning-specialty/"},{l:"Hugging Face Course (free)",u:"https://huggingface.co/learn/nlp-course"},{l:"fast.ai Practical Deep Learning (free)",u:"https://course.fast.ai"}],
+  youtube:[{l:"freeCodeCamp — Machine Learning full course",u:"https://youtube.com/watch?v=i_LwzRVP7bg"},{l:"Andrej Karpathy — Neural Networks from scratch",u:"https://youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ"},{l:"DeepLearning.AI — official YouTube",u:"https://youtube.com/@Deeplearningai"}],
+  practice:[{l:"Kaggle (free courses + competitions)",u:"https://kaggle.com/learn"},{l:"TensorFlow certification practice guide",u:"https://tensorflow.org/certificate"},{l:"Papers With Code benchmarks",u:"https://paperswithcode.com"}],
+  projects:[{t:"mini",n:"Pass TensorFlow Developer exam — build and train 5 model types (image, NLP, time-series)"},{t:"major",n:"Complete the DeepLearning.AI MLOps Specialization and deploy a model to production"},{t:"excl",n:"Fine-tune a Hugging Face model on a custom dataset, publish to HF Hub, and write a model card"}],
+  refs:[{t:"mrdbourke/tensorflow-deep-learning",u:"https://github.com/mrdbourke/tensorflow-deep-learning",d:"Daniel Bourke's free TensorFlow for Deep Learning course notebooks — perfect prep for the TF Developer cert.",tags:["TensorFlow","free","cert prep","notebooks"]},{t:"huggingface/course",u:"https://github.com/huggingface/course",d:"Official Hugging Face NLP course notebooks. Free, practical, and deeply respected in the ML hiring community.",tags:["HuggingFace","NLP","free course","transformers"]}]
+}
+]}
+]};
+
+let activeRole="all";
+let openCard=null;
+
+function getRoleTags(roles){return roles.map(r=>`<span class="role-tag tag-${r}">${RL[r]||r}</span>`).join('')}
+function cardMatchesRole(roles){return activeRole==="all"||roles.includes(activeRole)}
+
+function renderRefs(refs){
+  if(!refs||!refs.length) return '<div style="font-size:12px;color:var(--color-text-tertiary)">No sample projects listed yet.</div>';
+  return refs.map(r=>`<div class="ref-card">
+    <div class="ref-title"><a href="https://github.com/${r.t.includes('github.com')?r.t.replace('https://github.com/',''):r.t}" target="_blank">${r.t}</a></div>
+    <div class="ref-desc">${r.d}</div>
+    <div class="ref-tags">${(r.tags||[]).map(t=>`<span class="ref-tag">${t}</span>`).join('')}</div>
+  </div>`).join('');
+}
+
+function renderPanel(item,activeTab){
+  const isCert=item.type==='certification';
+  const tab=activeTab||(isCert?'certinfo':'resources');
+  const proj=item.projects||[];
+  const docsHtml=item.docs?item.docs.map(d=>`<a href="${d.u}" target="_blank">${d.l}</a>`).join(''):'';
+  const ytHtml=item.youtube?item.youtube.map(d=>`<a href="${d.u}" target="_blank">${d.l}</a>`).join(''):'';
+  const pracHtml=item.practice?item.practice.map(d=>`<a href="${d.u}" target="_blank">${d.l}</a>`).join(''):'';
+  const projHtml=proj.map(p=>`<div class="project-item"><span class="proj-label pl-${p.t}">${p.t}</span>${p.n}</div>`).join('');
+  const basic=item.concepts?.basic||[];
+  const adv=item.concepts?.advanced||[];
+  const basHtml=basic.map(c=>`<span class="concept">${c}</span>`).join('');
+  const advHtml=adv.map(c=>`<span class="concept adv">${c}</span>`).join('');
+  const refsHtml=renderRefs(item.refs);
+  const legendBadges=`<span style="background:#C0DD97;color:#27500A;padding:1px 4px;border-radius:3px;font-size:10px">mini</span> <span style="background:#B5D4F4;color:#0C447C;padding:1px 4px;border-radius:3px;font-size:10px">major</span> <span style="background:#F5C4B3;color:#712B13;padding:1px 4px;border-radius:3px;font-size:10px">excl</span>`;
+
+  const resourcesPane=`<div class="dp-grid">
+    ${docsHtml?`<div class="dp-section"><div class="dp-h">Docs & Official Links</div><div class="dp-links">${docsHtml}</div></div>`:''}
+    ${ytHtml?`<div class="dp-section"><div class="dp-h">YouTube</div><div class="dp-links">${ytHtml}</div></div>`:''}
+    ${pracHtml?`<div class="dp-section"><div class="dp-h">Practice & Prep</div><div class="dp-links">${pracHtml}</div></div>`:''}
+    ${projHtml?`<div class="dp-section"><div class="dp-h">Your Projects — ${legendBadges}</div>${projHtml}</div>`:''}
+    ${basHtml&&!isCert?`<div class="dp-section dp-fullwidth"><div class="dp-h">Concepts — <span style="font-size:10px;font-weight:400;color:var(--color-text-secondary)">white = basic &nbsp; <span style="color:#3C3489">purple = advanced</span></span></div><div class="concept-list">${basHtml}${advHtml}</div></div>`:''}
+  </div>`;
+
+  const certInfoPane=isCert?`<div class="dp-grid">
+    <div class="dp-section dp-fullwidth"><div class="dp-h">🟢 Available Certifications</div>
+      ${basic.map(c=>{
+        const isFree=c.toLowerCase().includes('free')||c.toLowerCase().includes('auditable')||c.toLowerCase().includes('free exam');
+        const isTop=c.toLowerCase().includes('best')||c.toLowerCase().includes('most valued')||c.toLowerCase().includes('top cert')||c.toLowerCase().includes('most hired');
+        return `<div class="cert-item">
+          ${isTop?`<span class="cert-badge cb-top">⭐ Top Pick</span>`:''}
+          ${isFree?`<span class="cert-badge cb-free">Free/Audit</span>`:''} ${c}</div>`;
+      }).join('')}
+    </div>
+    <div class="dp-section dp-fullwidth"><div class="dp-h">🔵 Advanced / Specialty Certifications</div>
+      ${adv.map(c=>{
+        const isFree=c.toLowerCase().includes('free');
+        return `<div class="cert-item">${isFree?`<span class="cert-badge cb-free">Free</span>`:''} ${c}</div>`;
+      }).join('')}
+    </div>
+  </div>`:'';
+
+  const refsPane=`<div>${refsHtml}</div>`;
+
+  const tabs=isCert
+    ?`<button class="dp-tab ${tab==='certinfo'?'active':''}" onclick="switchTab('${item.id}','certinfo')">📋 Cert Details</button>
+       <button class="dp-tab ${tab==='resources'?'active':''}" onclick="switchTab('${item.id}','resources')">Resources & Projects</button>
+       <button class="dp-tab ${tab==='refs'?'active':''}" onclick="switchTab('${item.id}','refs')">Repos to Study</button>`
+    :`<button class="dp-tab ${tab==='resources'?'active':''}" onclick="switchTab('${item.id}','resources')">Resources & Projects</button>
+      <button class="dp-tab ${tab==='refs'?'active':''}" onclick="switchTab('${item.id}','refs')">Sample Repos to Study</button>`;
+
+  return `<button class="close-btn" onclick="closePanel()">close ✕</button>
+<div class="dp-tabs">${tabs}</div>
+${isCert?`<div class="dp-pane ${tab==='certinfo'?'active':''}" id="pane-cert-${item.id}">${certInfoPane}</div>`:''}
+<div class="dp-pane ${tab==='resources'?'active':''}" id="pane-res-${item.id}">${resourcesPane}</div>
+<div class="dp-pane ${tab==='refs'?'active':''}" id="pane-ref-${item.id}">${refsPane}</div>`;
+}
+
+function switchTab(id,tab){
+  const allItems=DATA.phases.flatMap(p=>p.items);
+  const item=allItems.find(i=>i.id===id);
+  if(!item) return;
+  const panel=document.getElementById('panel-'+id);
+  if(panel){panel.innerHTML=renderPanel(item,tab);}
+}
+
+function closePanel(){
+  if(openCard){
+    document.getElementById('panel-'+openCard)?.classList.remove('open');
+    document.getElementById('card-'+openCard)?.classList.remove('open');
+    openCard=null;
+  }
+}
+
+function toggleCard(id){
+  const allItems=DATA.phases.flatMap(p=>p.items);
+  const item=allItems.find(i=>i.id===id);
+  if(!item) return;
+  if(openCard===id){closePanel();return;}
+  closePanel();
+  openCard=id;
+  document.getElementById('card-'+id)?.classList.add('open');
+  const panel=document.getElementById('panel-'+id);
+  if(panel){
+    panel.innerHTML=renderPanel(item,'resources');
+    panel.classList.add('open');
+    setTimeout(()=>panel.scrollIntoView({behavior:'smooth',block:'nearest'}),50);
+  }
+}
+
+function render(){
+  const root=document.getElementById('roadmapRoot');
+  root.innerHTML=DATA.phases.map(phase=>{
+    const vis=phase.items.filter(i=>cardMatchesRole(i.roles));
+    if(!vis.length) return '';
+    const cards=vis.map(item=>`
+      <div class="card ${openCard===item.id?'open':''}" id="card-${item.id}" onclick="toggleCard('${item.id}')">
+        <div class="card-emoji">${item.emoji}</div>
+        <div class="card-name">${item.name}</div>
+        <div class="card-type">${item.type}</div>
+        <div class="card-days">${item.days}</div>
+        <div class="card-roles">${getRoleTags(item.roles)}</div>
+      </div>
+      <div class="detail-panel ${openCard===item.id?'open':''}" id="panel-${item.id}">${openCard===item.id?renderPanel(item,'resources'):''}</div>
+    `).join('');
+    return `<div class="phase-block">
+      <div class="phase-label">${phase.label}<span class="phase-line"></span></div>
+      <div class="cards-grid">${cards}</div>
+    </div>`;
+  }).join('');
+}
+
+document.getElementById('roleFilters').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');
+  if(!btn) return;
+  activeRole=btn.dataset.role;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b===btn));
+  closePanel();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

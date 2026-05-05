@@ -1,0 +1,91 @@
+-- TOPIC: Functions | ghci: :load 02_functions.hs
+-- Docs: https://wiki.haskell.org/Function
+
+-- TODO 1: Function definition and type signatures
+-- double :: Int -> Int
+-- double x = x * 2
+--
+-- add :: Int -> Int -> Int   -- curried: Int -> (Int -> Int)
+-- add x y = x + y
+--
+-- add5 :: Int -> Int
+-- add5 = add 5               -- partial application
+
+-- TODO 2: Pattern matching on arguments
+-- head' :: [a] -> a
+-- head' []    = error "empty list"
+-- head' (x:_) = x
+--
+-- length' :: [a] -> Int
+-- length' []     = 0
+-- length' (_:xs) = 1 + length' xs
+--
+-- zip' :: [a] -> [b] -> [(a,b)]
+-- zip' _  []     = []
+-- zip' [] _      = []
+-- zip' (x:xs) (y:ys) = (x,y) : zip' xs ys
+
+-- TODO 3: Guards — cleaner than nested if-then-else
+-- bmiCategory :: Double -> String
+-- bmiCategory bmi
+--   | bmi < 18.5 = "Underweight"
+--   | bmi < 25.0 = "Normal"
+--   | bmi < 30.0 = "Overweight"
+--   | otherwise  = "Obese"
+--
+-- clamp :: Ord a => a -> a -> a -> a
+-- clamp lo hi x
+--   | x < lo = lo
+--   | x > hi = hi
+--   | otherwise = x
+
+-- TODO 4: Lambda expressions and point-free style
+-- square :: Int -> Int
+-- square = (^ 2)           -- point-free: (^ 2) x = x ^ 2
+--
+-- isEven :: Int -> Bool
+-- isEven = (== 0) . (`mod` 2)   -- function composition with (.)
+--
+-- sumSquares :: [Int] -> Int
+-- sumSquares = sum . map (^ 2) . filter even
+
+-- TODO 5: Function composition — (.) and ($)
+-- (.) :: (b -> c) -> (a -> b) -> (a -> c)
+-- f . g = \x -> f (g x)
+-- ($) :: (a -> b) -> a -> b
+-- f $ x = f x
+--
+-- processWords :: String -> [String]
+-- processWords = filter (not . null) . map (filter (/= ',')) . words
+--
+-- -- Without ($): putStrLn (show (sum (map (*2) [1..10])))
+-- -- With ($):    putStrLn $ show $ sum $ map (*2) [1..10]
+
+-- TODO 6: flip, const, id — useful combinators
+-- flip :: (a -> b -> c) -> b -> a -> c
+-- flip f x y = f y x
+--
+-- const :: a -> b -> a
+-- const x _ = x
+--
+-- id :: a -> a
+-- id x = x
+--
+-- -- Uses: flip map [1..5] (*2), const True . validate, id for no-op transforms
+
+-- TODO 7: where clause and let in
+-- bmi :: Double -> Double -> String
+-- bmi weight height = bmiCategory bmiValue
+--   where
+--     bmiValue = weight / height ^ 2
+--     bmiCategory b
+--       | b < 18.5 = "Underweight"
+--       | b < 25.0 = "Normal"
+--       | otherwise = "Overweight/Obese"
+
+-- TODO 8: Function application with ($) to avoid parens
+-- main :: IO ()
+-- main = do
+--   print $ map (*2) [1..10]
+--   print $ filter even $ map (+1) [1..10]
+--   mapM_ print $ zip [1..5] ['a'..'e']

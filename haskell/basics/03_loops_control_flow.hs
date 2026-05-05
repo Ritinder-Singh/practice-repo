@@ -1,0 +1,83 @@
+-- TOPIC: Loops & Control Flow | ghci: :load 03_loops_control_flow.hs
+-- Haskell has no loops — uses recursion and higher-order functions
+
+-- TODO 1: Recursion instead of loops
+-- factorial :: Integer -> Integer
+-- factorial 0 = 1
+-- factorial n = n * factorial (n - 1)
+--
+-- sumList :: Num a => [a] -> a
+-- sumList []     = 0
+-- sumList (x:xs) = x + sumList xs
+--
+-- reverseList :: [a] -> [a]
+-- reverseList []     = []
+-- reverseList (x:xs) = reverseList xs ++ [x]
+
+-- TODO 2: map, filter, foldr, foldl — replace most loops
+-- doubleAll :: [Int] -> [Int]
+-- doubleAll = map (*2)
+--
+-- onlyEvens :: [Int] -> [Int]
+-- onlyEvens = filter even
+--
+-- productList :: [Int] -> Int
+-- productList = foldl (*) 1
+--
+-- -- foldr vs foldl: foldr is right-associative (works on infinite lists), foldl is left-associative
+
+-- TODO 3: List comprehensions — concise filtering + mapping
+-- [ x^2 | x <- [1..10], odd x ]       -- squares of odd numbers
+-- [ (x,y) | x <- [1..3], y <- [1..3], x /= y ]  -- pairs
+-- [ (a,b,c) | c <- [1..100], a <- [1..c], b <- [a..c], a^2+b^2==c^2 ]  -- Pythagorean triples
+
+-- TODO 4: iterate, until, takeWhile, dropWhile
+-- powers :: Int -> [Int]
+-- powers base = iterate (*base) 1   -- [1, base, base^2, base^3, ...]
+-- take 10 (powers 2)                -- [1,2,4,8,...,512]
+--
+-- firstPowerOver :: Int -> Int -> Int
+-- firstPowerOver base limit = head $ dropWhile (<= limit) (powers base)
+--
+-- collatz :: Integer -> [Integer]
+-- collatz 1 = [1]
+-- collatz n = n : collatz (if even n then n `div` 2 else 3*n + 1)
+
+-- TODO 5: if-then-else as expression
+-- abs' :: Int -> Int
+-- abs' n = if n < 0 then -n else n
+--
+-- fizzbuzz :: Int -> String
+-- fizzbuzz n
+--   | n `mod` 15 == 0 = "FizzBuzz"
+--   | n `mod` 3  == 0 = "Fizz"
+--   | n `mod` 5  == 0 = "Buzz"
+--   | otherwise       = show n
+--
+-- -- Print FizzBuzz 1-100:
+-- -- mapM_ (putStrLn . fizzbuzz) [1..100]
+
+-- TODO 6: case expressions
+-- describeList :: [a] -> String
+-- describeList xs = "The list is " ++ case xs of
+--   []  -> "empty."
+--   [_] -> "a singleton."
+--   _   -> "longer."
+
+-- TODO 7: when and unless (from Control.Monad)
+-- main :: IO ()
+-- main = do
+--   let x = 5
+--   when (x > 3) $ putStrLn "x is greater than 3"
+--   unless (x > 10) $ putStrLn "x is not greater than 10"
+--   -- These are equivalent to: if cond then action else return ()
+
+-- TODO 8: forM_ and mapM_ — loops in IO
+-- import Control.Monad (forM_, forM)
+-- main :: IO ()
+-- main = do
+--   forM_ [1..10] $ \i -> putStrLn $ "Item " ++ show i
+--   results <- forM [1..5] $ \i -> do
+--     putStr $ "Processing " ++ show i ++ "... "
+--     return (i * i)
+--   print results

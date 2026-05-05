@@ -1,0 +1,94 @@
+-- TOPIC: Typeclasses | ghci: :load 05_oop_or_types.hs
+-- Typeclasses are Haskell's mechanism for ad-hoc polymorphism (like interfaces)
+
+-- TODO 1: Standard typeclasses
+-- Eq     — (==), (/=)
+-- Ord    — (<), (>), compare, min, max
+-- Show   — show (convert to String)
+-- Read   — read (parse from String)
+-- Enum   — succ, pred, [1..10]
+-- Bounded— minBound, maxBound
+-- Num    — (+), (-), (*), abs, signum
+-- Integral — div, mod, quot, rem
+-- Fractional — (/), recip, fromRational
+
+-- TODO 2: Defining a typeclass
+-- class Container f where
+--   empty  :: f a
+--   insert :: a -> f a -> f a
+--   toList :: f a -> [a]
+--   size   :: f a -> Int
+--   size = length . toList  -- default implementation
+--
+-- instance Container [] where
+--   empty  = []
+--   insert = (:)
+--   toList = id
+--
+-- instance Container Maybe where
+--   empty  = Nothing
+--   insert x _ = Just x
+--   toList Nothing  = []
+--   toList (Just x) = [x]
+
+-- TODO 3: Functor, Applicative, Monad
+-- class Functor f where
+--   fmap :: (a -> b) -> f a -> f b
+--
+-- class Functor f => Applicative f where
+--   pure :: a -> f a
+--   (<*>) :: f (a -> b) -> f a -> f b
+--
+-- class Applicative m => Monad m where
+--   return :: a -> m a
+--   (>>=) :: m a -> (a -> m b) -> m b
+--
+-- Demo with Maybe:
+-- fmap (+1) (Just 5)          -- Just 6
+-- fmap (+1) Nothing           -- Nothing
+-- Just (*2) <*> Just 5        -- Just 10
+-- Just 5 >>= \x -> Just (x+1) -- Just 6
+-- Nothing >>= \x -> Just (x+1)-- Nothing
+
+-- TODO 4: deriving common typeclasses
+-- data Color = Red | Green | Blue
+--   deriving (Show, Eq, Ord, Enum, Bounded)
+-- [Red ..]          -- [Red, Green, Blue]
+-- minBound :: Color -- Red
+-- show Green        -- "Green"
+-- Red < Blue        -- True
+
+-- TODO 5: Custom Eq and Ord instances
+-- data Person = Person { name :: String, age :: Int }
+-- instance Eq Person where
+--   p1 == p2 = name p1 == name p2 && age p1 == age p2
+-- instance Ord Person where
+--   compare p1 p2 = compare (age p1) (age p2)  -- order by age
+-- instance Show Person where
+--   show p = name p ++ " (age " ++ show (age p) ++ ")"
+
+-- TODO 6: Newtype deriving — reuse typeclass instances
+-- newtype Sum     a = Sum     { getSum     :: a } deriving (Show)
+-- newtype Product a = Product { getProduct :: a } deriving (Show)
+-- instance Num a => Semigroup (Sum a)     where Sum a <> Sum b = Sum (a + b)
+-- instance Num a => Monoid    (Sum a)     where mempty = Sum 0
+-- instance Num a => Semigroup (Product a) where Product a <> Product b = Product (a * b)
+-- instance Num a => Monoid    (Product a) where mempty = Product 1
+
+-- TODO 7: Foldable and Traversable
+-- class Foldable t where
+--   foldr :: (a -> b -> b) -> b -> t a -> b
+-- -- Gives you: sum, product, length, null, elem, maximum, minimum, toList
+--
+-- class (Functor t, Foldable t) => Traversable t where
+--   traverse :: Applicative f => (a -> f b) -> t a -> f (t b)
+-- -- Example: traverse readFile ["a.txt", "b.txt"] :: IO [String]
+
+-- TODO 8: Type class laws — contracts every instance must satisfy
+-- Functor laws:
+--   fmap id = id                      (identity)
+--   fmap (f . g) = fmap f . fmap g    (composition)
+-- Monad laws:
+--   return a >>= f ≡ f a              (left identity)
+--   m >>= return ≡ m                  (right identity)
+--   (m >>= f) >>= g ≡ m >>= (\x -> f x >>= g)  (associativity)

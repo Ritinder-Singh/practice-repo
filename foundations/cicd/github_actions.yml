@@ -1,0 +1,171 @@
+# =============================================================================
+# GitHub Actions — Practice Workflows
+# =============================================================================
+# Docs: https://docs.github.com/actions
+# Key concepts: workflow, job, step, runner, trigger, matrix, secrets, artifacts
+# =============================================================================
+
+# ─── EXAMPLE 1: Basic CI pipeline ────────────────────────────────────────────
+# TODO: Create .github/workflows/ci.yml in a real project and make this pass.
+#
+# name: CI
+#
+# on:
+#   push:
+#     branches: [main, develop]
+#   pull_request:
+#     branches: [main]
+#
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Set up Python
+#         uses: actions/setup-python@v5
+#         with:
+#           python-version: "3.12"
+#           cache: "pip"                    # cache pip dependencies by requirements hash
+#
+#       - name: Install dependencies
+#         run: pip install -r requirements.txt
+#
+#       - name: Lint with ruff
+#         run: ruff check .
+#
+#       - name: Run tests
+#         run: pytest --cov=. --cov-report=xml
+#
+#       - name: Upload coverage
+#         uses: codecov/codecov-action@v4
+#         with:
+#           file: ./coverage.xml
+
+# ─── EXAMPLE 2: Docker build + push to registry ──────────────────────────────
+# TODO: Adapt this to push to GitHub Container Registry (ghcr.io) after tests pass.
+#
+# name: Docker Build & Push
+#
+# on:
+#   push:
+#     branches: [main]
+#
+# env:
+#   REGISTRY: ghcr.io
+#   IMAGE_NAME: ${{ github.repository }}
+#
+# jobs:
+#   build-and-push:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#
+#       - name: Log in to registry
+#         uses: docker/login-action@v3
+#         with:
+#           registry: ${{ env.REGISTRY }}
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GITHUB_TOKEN }}  # auto-provided, no setup needed
+#
+#       - name: Extract metadata (tags)
+#         id: meta
+#         uses: docker/metadata-action@v5
+#         with:
+#           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+#           tags: |
+#             type=sha
+#             type=ref,event=branch
+#             type=semver,pattern={{version}}
+#
+#       - name: Build and push
+#         uses: docker/build-push-action@v5
+#         with:
+#           context: .
+#           push: true
+#           tags: ${{ steps.meta.outputs.tags }}
+#           labels: ${{ steps.meta.outputs.labels }}
+#           cache-from: type=gha      # GitHub Actions cache for layer caching
+#           cache-to: type=gha,mode=max
+
+# ─── EXAMPLE 3: Matrix builds — test across multiple versions ─────────────────
+# TODO: Set up a matrix to test your Python project on 3.10, 3.11, 3.12.
+#
+# jobs:
+#   test:
+#     strategy:
+#       matrix:
+#         python-version: ["3.10", "3.11", "3.12"]
+#         os: [ubuntu-latest, macos-latest]
+#       fail-fast: false   # don't cancel other jobs if one fails
+#
+#     runs-on: ${{ matrix.os }}
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#       - uses: actions/setup-python@v5
+#         with:
+#           python-version: ${{ matrix.python-version }}
+#       - run: pip install -r requirements.txt && pytest
+
+# ─── EXAMPLE 4: Deploy to production after tests pass ────────────────────────
+# TODO: Chain jobs — deploy only runs if test job succeeded.
+#
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: echo "running tests..."
+#
+#   deploy:
+#     needs: test           # only runs if test passes
+#     runs-on: ubuntu-latest
+#     environment: production    # requires manual approval if configured
+#     if: github.ref == 'refs/heads/main'
+#
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Deploy to server
+#         run: |
+#           echo "${{ secrets.DEPLOY_KEY }}" > /tmp/key
+#           chmod 600 /tmp/key
+#           ssh -i /tmp/key -o StrictHostKeyChecking=no user@${{ secrets.HOST }} \
+#             "cd /app && git pull && docker compose up -d --build"
+
+# ─── EXAMPLE 5: Reusable workflow ────────────────────────────────────────────
+# TODO: Extract the build-and-push job into a reusable workflow called from other repos.
+#
+# .github/workflows/reusable-docker.yml:
+# on:
+#   workflow_call:
+#     inputs:
+#       image_name:
+#         type: string
+#         required: true
+#     secrets:
+#       DEPLOY_KEY:
+#         required: true
+#
+# Calling from another workflow:
+# jobs:
+#   call-build:
+#     uses: your-org/.github/.github/workflows/reusable-docker.yml@main
+#     with:
+#       image_name: my-app
+#     secrets:
+#       DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
+# ─── KEY CONCEPTS TO UNDERSTAND ──────────────────────────────────────────────
+# secrets:         — encrypted, set in repo Settings > Secrets — NEVER hardcode
+# GITHUB_TOKEN:    — auto-provided, scoped to the repo, no setup needed
+# environment:     — named deploy targets with protection rules (manual approval)
+# needs:           — job dependency graph — controls execution order
+# if:              — conditional job/step execution
+# strategy.matrix: — fan out jobs across combinations (OS, language version, etc.)
+# cache:           — speed up pip/npm/maven installs across runs
+# artifacts:       — pass files between jobs or download after workflow

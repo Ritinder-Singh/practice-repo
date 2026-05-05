@@ -1,0 +1,161 @@
+// =============================================================================
+// Jenkins — Declarative Pipeline Practice
+// =============================================================================
+// Docs: https://www.jenkins.io/doc/book/pipeline/syntax/
+// Key concepts: stages, steps, agent, environment, post, parallel, credentials
+// Run: paste into a Jenkins Pipeline job or commit as Jenkinsfile in repo root
+// =============================================================================
+
+// ─── EXAMPLE 1: Basic Declarative Pipeline ───────────────────────────────────
+// TODO: Create a new Jenkins Pipeline job pointing to a repo with this Jenkinsfile.
+//
+// pipeline {
+//     agent any                         // run on any available agent
+//
+//     environment {
+//         APP_NAME   = "my-app"
+//         REGISTRY   = "ghcr.io/ritinder-singh"
+//         IMAGE_TAG  = "${env.GIT_COMMIT[0..7]}"    // short SHA as tag
+//     }
+//
+//     stages {
+//         stage("Checkout") {
+//             steps {
+//                 checkout scm               // checkout from SCM configured on job
+//             }
+//         }
+//
+//         stage("Install") {
+//             steps {
+//                 sh "pip install -r requirements.txt"
+//             }
+//         }
+//
+//         stage("Test") {
+//             steps {
+//                 sh "pytest --junitxml=reports/test-results.xml"
+//             }
+//             post {
+//                 always {
+//                     junit "reports/test-results.xml"   // publish test results
+//                 }
+//             }
+//         }
+//
+//         stage("Build Docker Image") {
+//             steps {
+//                 sh "docker build -t ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} ."
+//             }
+//         }
+//
+//         stage("Push") {
+//             when {
+//                 branch "main"             // only push from main branch
+//             }
+//             steps {
+//                 withCredentials([usernamePassword(
+//                     credentialsId: "ghcr-credentials",
+//                     usernameVariable: "REGISTRY_USER",
+//                     passwordVariable: "REGISTRY_PASS"
+//                 )]) {
+//                     sh "echo ${REGISTRY_PASS} | docker login ${REGISTRY} -u ${REGISTRY_USER} --password-stdin"
+//                     sh "docker push ${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+//                 }
+//             }
+//         }
+//
+//         stage("Deploy to Staging") {
+//             when {
+//                 branch "main"
+//             }
+//             steps {
+//                 sshagent(["deploy-ssh-key"]) {
+//                     sh """
+//                         ssh -o StrictHostKeyChecking=no ubuntu@staging.example.com \\
+//                         "cd /app && docker pull ${REGISTRY}/${APP_NAME}:${IMAGE_TAG} && \\
+//                          docker compose up -d --build"
+//                     """
+//                 }
+//             }
+//         }
+//     }
+//
+//     post {
+//         success {
+//             slackSend channel: "#deployments", color: "good",
+//                 message: "✅ ${APP_NAME} deployed successfully — ${IMAGE_TAG}"
+//         }
+//         failure {
+//             slackSend channel: "#deployments", color: "danger",
+//                 message: "❌ ${APP_NAME} pipeline failed — ${env.BUILD_URL}"
+//         }
+//         always {
+//             cleanWs()     // clean workspace after every build
+//         }
+//     }
+// }
+
+// ─── EXAMPLE 2: Parallel stages (like PixelPod — test + lint at same time) ───
+// TODO: Add parallel stages to speed up CI by running test + lint simultaneously.
+//
+// stages {
+//     stage("Validate") {
+//         parallel {
+//             stage("Lint") {
+//                 steps { sh "ruff check ." }
+//             }
+//             stage("Type Check") {
+//                 steps { sh "mypy app/" }
+//             }
+//             stage("Test") {
+//                 steps { sh "pytest" }
+//             }
+//         }
+//     }
+// }
+
+// ─── EXAMPLE 3: Multi-environment pipeline (staging → prod) ──────────────────
+// TODO: Build a pipeline with manual approval gate before production deploy.
+//
+// stage("Deploy to Production") {
+//     when { branch "main" }
+//     input {
+//         message "Deploy to production?"
+//         ok "Yes, deploy"
+//         submitter "admin,release-team"    // only these users can approve
+//     }
+//     steps {
+//         sh "kubectl set image deployment/my-app my-app=${REGISTRY}/${APP_NAME}:${IMAGE_TAG}"
+//     }
+// }
+
+// ─── EXAMPLE 4: Shared Library (advanced — DRY across pipelines) ─────────────
+// TODO: Create a Jenkins Shared Library to reuse the Docker build/push logic.
+//
+// In a separate repo (jenkins-shared-lib):
+//   vars/dockerBuildPush.groovy
+//   def call(String imageName, String tag) {
+//       sh "docker build -t ${imageName}:${tag} ."
+//       sh "docker push ${imageName}:${tag}"
+//   }
+//
+// In your Jenkinsfile:
+//   @Library("jenkins-shared-lib") _
+//   pipeline {
+//       stages {
+//           stage("Build") {
+//               steps { dockerBuildPush("my-app", env.GIT_COMMIT) }
+//           }
+//       }
+//   }
+
+// ─── KEY CONCEPTS TO UNDERSTAND ──────────────────────────────────────────────
+// agent any vs agent { docker { image "python:3.12" } }   — where the job runs
+// when {}          — conditional stage execution (branch, environment, expression)
+// input {}         — manual approval gate before a stage proceeds
+// withCredentials  — safely inject secrets, masked in logs
+// sshagent         — inject SSH key for remote deploys
+// post {}          — always/success/failure/unstable blocks
+// parallel {}      — run stages concurrently to speed up pipeline
+// stash/unstash    — pass files between stages on different agents
+// parameters       — parameterize builds (string, boolean, choice)

@@ -1,0 +1,86 @@
+-- TOPIC: Variables & Types | ghci: :load 01_variables_types.hs, then test functions
+-- Docs: https://www.haskell.org/documentation/
+
+-- TODO 1: Basic types and type annotations
+-- myInt :: Int
+-- myInt = 42
+-- myInteger :: Integer  -- arbitrary precision
+-- myInteger = 2 ^ 100
+-- myDouble :: Double
+-- myDouble = 3.14159
+-- myBool :: Bool
+-- myBool = True
+-- myChar :: Char
+-- myChar = 'A'
+-- myString :: String  -- type String = [Char]
+-- myString = "hello"
+
+-- TODO 2: let and where bindings
+-- circleArea :: Double -> Double
+-- circleArea r = pi * r ^ 2
+--   where pi = 3.14159265358979
+--
+-- cylinderVolume :: Double -> Double -> Double
+-- cylinderVolume r h =
+--   let base = pi * r ^ 2
+--   in base * h
+
+-- TODO 3: Tuples — fixed-size, heterogeneous
+-- origin :: (Int, Int)
+-- origin = (0, 0)
+--
+-- fst3 :: (a, b, c) -> a
+-- fst3 (x, _, _) = x
+--
+-- swap :: (a, b) -> (b, a)
+-- swap (a, b) = (b, a)
+
+-- TODO 4: Lists — linked, homogeneous, infinite possible
+-- fibs :: [Integer]
+-- fibs = 0 : 1 : zipWith (+) fibs (tail fibs)  -- infinite list!
+--
+-- take 10 fibs       -- [0,1,1,2,3,5,8,13,21,34]
+-- [1..10]            -- [1,2,3,4,5,6,7,8,9,10]
+-- [1,3..20]          -- odd numbers: [1,3,5,7,...,19]
+-- cycle [1,2,3]      -- [1,2,3,1,2,3,...] infinite
+
+-- TODO 5: Maybe type — represents optional values
+-- safeHead :: [a] -> Maybe a
+-- safeHead []    = Nothing
+-- safeHead (x:_) = Just x
+--
+-- safeDivide :: Int -> Int -> Maybe Int
+-- safeDivide _ 0 = Nothing
+-- safeDivide a b = Just (a `div` b)
+--
+-- fromMaybe 0 (safeDivide 10 2)  -- 5
+-- fromMaybe 0 (safeDivide 10 0)  -- 0
+
+-- TODO 6: Type synonyms and newtypes
+-- type Name = String
+-- type Point = (Double, Double)
+--
+-- newtype UserId = UserId Int deriving (Show, Eq)
+-- newtype Email  = Email String deriving (Show, Eq)
+-- -- Newtypes: zero-cost wrapper, stronger type safety than type synonym
+
+-- TODO 7: Record syntax
+-- data Person = Person
+--   { personName :: String
+--   , personAge  :: Int
+--   , personEmail :: String
+--   } deriving (Show, Eq)
+--
+-- alice :: Person
+-- alice = Person { personName = "Alice", personAge = 30, personEmail = "alice@example.com" }
+-- older = alice { personAge = 31 }  -- record update syntax
+
+-- TODO 8: ADT with multiple constructors
+-- data Shape = Circle Double | Rectangle Double Double | Triangle Double Double Double
+--   deriving (Show, Eq)
+--
+-- area :: Shape -> Double
+-- area (Circle r)        = pi * r ^ 2
+-- area (Rectangle w h)   = w * h
+-- area (Triangle a b c)  = let s = (a + b + c) / 2
+--                           in sqrt (s * (s-a) * (s-b) * (s-c))

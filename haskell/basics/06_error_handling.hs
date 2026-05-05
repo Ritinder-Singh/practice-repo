@@ -1,0 +1,87 @@
+-- TOPIC: Error Handling | ghci: :load 06_error_handling.hs
+-- import Control.Exception
+-- import Control.Monad.Except
+
+-- TODO 1: Either for explicit error handling
+-- type AppError = String  -- or a proper ADT
+-- safeDivide :: Int -> Int -> Either String Int
+-- safeDivide _ 0 = Left "Division by zero"
+-- safeDivide a b = Right (a `div` b)
+--
+-- -- Chaining with >>= (Monad instance for Either):
+-- compute :: Int -> Int -> Int -> Either String Int
+-- compute a b c = do
+--   x <- safeDivide a b
+--   y <- safeDivide x c
+--   return (x + y)
+
+-- TODO 2: Custom error type with ADT
+-- data AppError
+--   = NotFound String
+--   | InvalidInput String
+--   | DatabaseError { errCode :: Int, errMsg :: String }
+--   | Unauthorized
+--   deriving (Show)
+--
+-- lookupUser :: Int -> Either AppError User
+-- lookupUser id
+--   | id <= 0   = Left (InvalidInput "ID must be positive")
+--   | id > 100  = Left (NotFound $ "User " ++ show id ++ " not found")
+--   | otherwise = Right (User id "Alice")
+
+-- TODO 3: Maybe for simple missing values
+-- safeHead :: [a] -> Maybe a
+-- safeHead []    = Nothing
+-- safeHead (x:_) = Just x
+--
+-- lookupAndDouble :: Map.Map String Int -> String -> Maybe Int
+-- lookupAndDouble m k = fmap (*2) (Map.lookup k m)  -- or: (*2) <$> Map.lookup k m
+
+-- TODO 4: ExceptT monad transformer — Either in IO
+-- import Control.Monad.Except
+-- type App a = ExceptT AppError IO a
+--
+-- fetchUser :: Int -> App User
+-- fetchUser id = do
+--   when (id <= 0) $ throwError (InvalidInput "ID must be positive")
+--   liftIO $ putStrLn $ "Fetching user " ++ show id
+--   return (User id "Alice")
+--
+-- runApp :: App a -> IO (Either AppError a)
+-- runApp = runExceptT
+--
+-- main :: IO ()
+-- main = runApp (fetchUser 1) >>= print
+
+-- TODO 5: throwIO and catch in IO
+-- import Control.Exception
+-- data MyException = MyException String deriving (Show)
+-- instance Exception MyException
+--
+-- riskyOp :: IO Int
+-- riskyOp = throwIO (MyException "something failed")
+--
+-- safe :: IO Int
+-- safe = riskyOp `catch` \(MyException msg) -> do
+--   putStrLn $ "Caught: " ++ msg
+--   return 0
+
+-- TODO 6: evaluate and try — force lazy evaluation safely
+-- import Control.Exception
+-- result <- try (evaluate (1 `div` 0)) :: IO (Either SomeException Int)
+-- case result of
+--   Left e  -> putStrLn $ "Exception: " ++ show e
+--   Right n -> print n
+
+-- TODO 7: bracket — resource safety
+-- import Control.Exception (bracket)
+-- withFile :: FilePath -> (Handle -> IO a) -> IO a
+-- withFile path action = bracket (openFile path ReadMode) hClose action
+-- -- bracket acquire release action
+-- -- release always runs, even if action throws
+
+-- TODO 8: error vs undefined vs userError
+-- error "message"     -- throws ErrorCall exception at runtime
+-- undefined           -- throws ErrorCall "Prelude.undefined"; marks incomplete code
+-- userError "msg"     -- IOError with custom message
+-- throwIO (userError "msg") :: IO a

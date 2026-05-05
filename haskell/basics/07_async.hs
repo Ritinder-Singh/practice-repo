@@ -1,0 +1,88 @@
+-- TOPIC: Concurrency & Async | ghci: :load 07_async.hs
+-- import Control.Concurrent
+-- import Control.Concurrent.STM
+-- import Control.Concurrent.Async
+
+-- TODO 1: forkIO — lightweight green threads
+-- import Control.Concurrent
+-- main :: IO ()
+-- main = do
+--   threadId <- forkIO $ do
+--     threadDelay 1000000  -- 1 second (microseconds)
+--     putStrLn "Thread done"
+--   putStrLn "Main continuing"
+--   threadDelay 2000000  -- wait for thread
+--   putStrLn "Main done"
+
+-- TODO 2: MVar — mutable shared state between threads
+-- import Control.Concurrent
+-- counter :: IO ()
+-- counter = do
+--   mvar <- newMVar (0 :: Int)
+--   let increment = modifyMVar_ mvar (return . (+1))
+--   threads <- replicateM 10 (forkIO $ replicateM_ 1000 increment)
+--   mapM_ (const $ threadDelay 100000) threads
+--   val <- readMVar mvar
+--   print val  -- should be 10000
+
+-- TODO 3: STM (Software Transactional Memory) — composable atomic operations
+-- import Control.Concurrent.STM
+-- transfer :: TVar Int -> TVar Int -> Int -> STM ()
+-- transfer from to amount = do
+--   fromVal <- readTVar from
+--   when (fromVal < amount) $ throwSTM (userError "Insufficient funds")
+--   writeTVar from (fromVal - amount)
+--   modifyTVar' to (+amount)
+--
+-- -- Runs atomically — no partial updates, no deadlocks
+-- atomically $ transfer accountA accountB 100
+
+-- TODO 4: STM channels (TChan, TQueue, TBQueue)
+-- import Control.Concurrent.STM
+-- producerConsumer :: IO ()
+-- producerConsumer = do
+--   queue <- newTBQueueIO 10  -- bounded queue, capacity 10
+--   let produce = mapM_ (\i -> atomically $ writeTBQueue queue i) [1..20]
+--   let consume = forever $ do
+--         item <- atomically $ readTBQueue queue
+--         putStrLn $ "Got: " ++ show item
+--   withAsync produce $ \_ -> withAsync consume $ \_ -> threadDelay 1000000
+
+-- TODO 5: async library — higher-level concurrency
+-- import Control.Concurrent.Async
+-- fetchBoth :: IO (String, String)
+-- fetchBoth = do
+--   (r1, r2) <- concurrently (fetchUrl "url1") (fetchUrl "url2")
+--   return (r1, r2)
+--
+-- -- race — return whichever finishes first
+-- result <- race (timeout 1000 slowOp) (return "fast")
+--
+-- -- mapConcurrently — parallel map
+-- results <- mapConcurrently fetchUrl ["url1", "url2", "url3"]
+
+-- TODO 6: Async with exception handling
+-- import Control.Concurrent.Async
+-- withAsync task $ \a -> do
+--   result <- waitCatch a   -- Right result or Left exception
+--   case result of
+--     Left e  -> putStrLn $ "Failed: " ++ show e
+--     Right v -> print v
+
+-- TODO 7: Chan — unbounded channel
+-- import Control.Concurrent
+-- main :: IO ()
+-- main = do
+--   chan <- newChan
+--   forkIO $ mapM_ (writeChan chan) [1..5 :: Int]
+--   replicateM_ 5 $ readChan chan >>= print
+
+-- TODO 8: IORef with atomicModifyIORef' — lock-free updates
+-- import Data.IORef
+-- atomicCounter :: IO ()
+-- atomicCounter = do
+--   ref <- newIORef (0 :: Int)
+--   let increment = atomicModifyIORef' ref (\n -> (n+1, ()))
+--   threads <- replicateM 100 (forkIO $ replicateM_ 1000 increment)
+--   mapM_ (\_ -> threadDelay 10000) threads
+--   readIORef ref >>= print
