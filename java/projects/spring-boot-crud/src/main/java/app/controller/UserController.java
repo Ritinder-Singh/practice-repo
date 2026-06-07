@@ -1,5 +1,16 @@
 package app.controller;
 
+import app.dto.CreateUserRequest;
+import app.dto.UpdateUserRequest;
+import app.dto.UserDto;
+import app.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
+import java.util.List;
 // PROJECT: Spring Boot User Controller
 //
 // TODO 1: Add class-level annotations:
@@ -29,6 +40,41 @@ package app.controller;
 //   @DeleteMapping("/{id}")
 //   public ResponseEntity<Void> deleteUser(@PathVariable Long id) { ... }
 
+//public class UserController {
+// stub
+//}
+
+@RestController
+@RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
-    // stub
+
+  private final UserService userService;
+
+  @GetMapping
+  public ResponseEntity<List<UserDto>> getAll() {
+    return ResponseEntity.ok(userService.findAll());
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<UserDto> getById(@PathVariable Long id) {
+    return ResponseEntity.ok(userService.findById(id));
+  }
+
+  @PostMapping
+  public ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest req) {
+    UserDto created = userService.create(req);
+    return ResponseEntity.created(URI.create("/api/users/" + created.id())).body(created);
+  }
+
+  @PutMapping("/{id}")
+  public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
+    return ResponseEntity.ok(userService.update(id, req));
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<Void> delete(@PathVariable Long id) {
+    userService.delete(id);
+    return ResponseEntity.noContent().build();
+  }
 }
