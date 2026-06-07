@@ -1,45 +1,151 @@
 # Spring Boot CRUD REST API
 
-## Setup
+A fully working REST API for managing users, built with Spring Boot 3, Spring Data JPA, and an H2 in-memory database. Built as a learning project to understand the three-layer architecture of a Spring Boot application.
 
-```bash
-# Option 1: Spring Initializr CLI
-curl https://start.spring.io/starter.zip \
-  -d dependencies=web,data-jpa,postgresql,lombok,validation \
-  -d type=maven-project \
-  -d language=java \
-  -d bootVersion=3.2.0 \
-  -d artifactId=crud-api \
-  -o crud-api.zip
-unzip crud-api.zip && cd crud-api
+---
 
-# Option 2: start.spring.io browser → generate
+## Architecture
+
+Every HTTP request passes through three layers in order:
+
+```
+HTTP Request
+     │
+     ▼
+┌─────────────┐
+│  Controller │  Handles routes, parses request/response, delegates to service
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│   Service   │  Business logic, transactions, converts entities ↔ DTOs
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ Repository  │  Talks to the database — SQL is generated automatically
+└──────┬──────┘
+       │
+       ▼
+  H2 Database
 ```
 
-## What to Build
+Each layer only talks to the layer directly below it. The controller never touches the database.
 
-### Milestone 1 — Entity + Repository
-- [ ] `User` entity: `@Entity`, `@Id @GeneratedValue`, fields: id, name, email, createdAt
-- [ ] `UserRepository extends JpaRepository<User, Long>` — free CRUD + custom queries
-- [ ] Configure `application.properties`: datasource URL, username, password, `ddl-auto=update`
+---
 
-### Milestone 2 — Service Layer
-- [ ] `UserService` with `@Service` — business logic, `@Transactional`
-- [ ] Custom exception: `UserNotFoundException extends RuntimeException`
+## Project Structure
 
-### Milestone 3 — REST Controller
-- [ ] `GET /api/users` — return all users
-- [ ] `GET /api/users/{id}` — return one or 404
-- [ ] `POST /api/users` — create with `@Valid @RequestBody`
-- [ ] `PUT /api/users/{id}` — update
-- [ ] `DELETE /api/users/{id}` — delete
+```
+src/main/java/app/
+├── Application.java                  # Entry point — boots the Spring app
+│
+├── model/
+│   └── User.java                     # @Entity — maps to the "users" table
+│
+├── repository/
+│   └── UserRepository.java           # JpaRepository — free CRUD + custom queries
+│
+├── service/
+│   └── UserService.java              # Business logic, @Transactional
+│
+├── controller/
+│   └── UserController.java           # REST endpoints, HTTP request/response
+│
+├── dto/
+│   ├── UserDto.java                  # Response shape (what the API returns)
+│   ├── CreateUserRequest.java        # POST body shape
+│   └── UpdateUserRequest.java        # PUT body shape
+│
+└── exception/
+    ├── UserNotFoundException.java    # Thrown when a user id doesn't exist
+    └── GlobalExceptionHandler.java   # Maps exceptions to HTTP error responses
+```
 
-### Milestone 4 — Exception Handling
-- [ ] `@ControllerAdvice` `GlobalExceptionHandler`
-- [ ] Handle `MethodArgumentNotValidException`, `UserNotFoundException`
-- [ ] Return `ProblemDetail` (Spring 6) or custom `ErrorResponse`
+---
 
-### Milestone 5 — Advanced
-- [ ] Pagination: `Pageable` parameter, `Page<User>` response
-- [ ] Spring Security: JWT authentication for all endpoints
-- [ ] Docker Compose: `docker-compose.yml` with postgres + app services
+## Key Concepts
+
+**Why DTOs?**
+We never expose raw `User` entities in API responses. DTOs (`UserDto`, `CreateUserRequest`, etc.) decouple the API contract from the database schema. If you rename a DB column, the API stays the same.
+
+**Why a Service layer?**
+Keeps business logic out of the controller. The controller's only job is HTTP — parsing requests and returning responses.
+
+**Why `JpaRepository`?**
+Spring Data JPA generates SQL from method names (derived queries) and provides `save()`, `findById()`, `deleteById()`, etc. for free — no SQL needed for basic operations.
+
+**Why `@Transactional`?**
+Wraps a method in a database transaction. If anything throws, the DB rolls back automatically — no partial writes.
+
+---
+
+## Running the App
+
+**Prerequisites:** Java 17+, Maven
+
+```bash
+mvn spring-boot:run
+```
+
+The app starts on `http://localhost:8080`.
+
+The H2 browser console (for inspecting the DB) is available at `http://localhost:8080/h2-console`.
+Use JDBC URL: `jdbc:h2:mem:testdb`, leave username/password blank.
+
+---
+
+## API Endpoints
+
+| Method | Path | Description | Status |
+|--------|------|-------------|--------|
+| GET | `/api/users` | Get all users | 200 |
+| GET | `/api/users/{id}` | Get user by id | 200 / 404 |
+| POST | `/api/users` | Create a user | 201 |
+| PUT | `/api/users/{id}` | Update a user | 200 / 404 |
+| DELETE | `/api/users/{id}` | Delete a user | 204 / 404 |
+
+---
+
+## Example Requests
+
+```bash
+# Create a user
+curl -s -X POST http://localhost:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice","email":"alice@example.com"}' | jq
+
+# Get all users
+curl -s http://localhost:8080/api/users | jq
+
+# Get user by id
+curl -s http://localhost:8080/api/users/1 | jq
+
+# Update a user
+curl -s -X PUT http://localhost:8080/api/users/1 \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Alice Smith"}' | jq
+
+# Delete a user
+curl -s -X DELETE http://localhost:8080/api/users/1
+
+# Trigger a 404
+curl -s http://localhost:8080/api/users/999 | jq
+
+# Trigger a 400 (validation failure)
+curl -s -X POST http://localhost:8080/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name":"","email":"notanemail"}' | jq
+```
+
+---
+
+## Dependencies
+
+| Dependency | Purpose |
+|---|---|
+| `spring-boot-starter-web` | Embedded Tomcat, REST controllers |
+| `spring-boot-starter-data-jpa` | JPA/Hibernate, repository layer |
+| `spring-boot-starter-validation` | Bean Validation (`@NotBlank`, `@Email`) |
+| `h2` | In-memory database — zero setup |
+| `lombok` | Eliminates boilerplate (`@Getter`, `@Setter`, `@RequiredArgsConstructor`) |

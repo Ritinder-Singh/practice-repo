@@ -11,39 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-// PROJECT: Spring Boot User Controller
-//
-// TODO 1: Add class-level annotations:
-//   @RestController
-//   @RequestMapping("/api/users")
-//   @RequiredArgsConstructor   (Lombok)
-//
-// TODO 2: Inject UserService via constructor injection
-//
-// TODO 3: GET /api/users → List<UserDto>
-//   @GetMapping
-//   public ResponseEntity<List<UserDto>> getAllUsers() { ... }
-//
-// TODO 4: GET /api/users/{id} → UserDto or 404
-//   @GetMapping("/{id}")
-//   public ResponseEntity<UserDto> getUserById(@PathVariable Long id) { ... }
-//
-// TODO 5: POST /api/users → 201 Created with Location header
-//   @PostMapping
-//   public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserRequest req) { ... }
-//
-// TODO 6: PUT /api/users/{id} → updated UserDto
-//   @PutMapping("/{id}")
-//   public ResponseEntity<UserDto> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest req) { ... }
-//
-// TODO 7: DELETE /api/users/{id} → 204 No Content
-//   @DeleteMapping("/{id}")
-//   public ResponseEntity<Void> deleteUser(@PathVariable Long id) { ... }
 
-//public class UserController {
-// stub
-//}
-
+// @RestController = @Controller + @ResponseBody — every method return value is written as JSON automatically.
+// @RequestMapping("/api/users") prefixes all routes in this class with /api/users.
+// @RequiredArgsConstructor injects UserService via constructor (same pattern as the service layer).
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -51,27 +22,35 @@ public class UserController {
 
   private final UserService userService;
 
+  // GET /api/users — returns all users. 200 OK with a JSON array.
   @GetMapping
   public ResponseEntity<List<UserDto>> getAll() {
     return ResponseEntity.ok(userService.findAll());
   }
 
+  // GET /api/users/{id} — @PathVariable pulls the {id} segment out of the URL.
+  // Returns 200 with the user, or throws UserNotFoundException (caught by GlobalExceptionHandler → 404).
   @GetMapping("/{id}")
   public ResponseEntity<UserDto> getById(@PathVariable Long id) {
     return ResponseEntity.ok(userService.findById(id));
   }
 
+  // POST /api/users — @RequestBody deserializes the JSON body into a CreateUserRequest.
+  // @Valid triggers Bean Validation (@NotBlank, @Email) on the request object.
+  // Returns 201 Created with a Location header pointing to the new resource.
   @PostMapping
   public ResponseEntity<UserDto> create(@Valid @RequestBody CreateUserRequest req) {
     UserDto created = userService.create(req);
     return ResponseEntity.created(URI.create("/api/users/" + created.id())).body(created);
   }
 
+  // PUT /api/users/{id} — updates an existing user. Returns 200 with the updated user.
   @PutMapping("/{id}")
   public ResponseEntity<UserDto> update(@PathVariable Long id, @RequestBody UpdateUserRequest req) {
     return ResponseEntity.ok(userService.update(id, req));
   }
 
+  // DELETE /api/users/{id} — deletes the user. Returns 204 No Content (success with no body).
   @DeleteMapping("/{id}")
   public ResponseEntity<Void> delete(@PathVariable Long id) {
     userService.delete(id);
