@@ -49,3 +49,16 @@ cabal install servant-server warp aeson
 - [ ] Add `BasicAuth "realm" User` or `AuthProtect "jwt"` to routes
 - [ ] `AuthServerData (AuthProtect "jwt") = User`
 - [ ] JWT validation in auth handler
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Type-level API definition with Servant combinators | `UserAPI` type alias |
+| `Capture`, `ReqBody`, `Get`, `Post`, `Delete` combinators | `UserAPI` type |
+| `Server UserAPI` implementation matching the type exactly | `server` function |
+| `IORef` for in-memory mutable state in Haskell | `server` implementation |
+| WAI `Application` + Warp HTTP server | `app`, `main` |
+| `throwError err404` / `err400` for HTTP errors | endpoint handlers |
+| Auto-generated client functions from the same API type | Milestone 4 — `client (Proxy :: Proxy UserAPI)` |
+| `BasicAuth` / `AuthProtect` for JWT authentication | Milestone 5 |

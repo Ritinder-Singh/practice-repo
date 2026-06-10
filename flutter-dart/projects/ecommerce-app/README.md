@@ -59,3 +59,17 @@ flutter pub get
 - [ ] Delivery address form with validation
 - [ ] Payment stub (Stripe Flutter SDK integration)
 - [ ] Order confirmation screen with animation
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| BLoC pattern (Events → BLoC → States) | `ProductBloc`, `CartBloc`, `AuthBloc` |
+| Discriminated union action types | `CartAction` (ADD_ITEM / REMOVE_ITEM / UPDATE_QTY / CLEAR_CART) |
+| Repository protocol + concrete API implementation | `ProductRepository` / `ApiProductRepository` |
+| `dio` HTTP client for REST calls | `ApiProductRepository` |
+| `Hive` local storage for offline product cache | Milestone 5 |
+| `go_router` with `ShellRoute` for bottom navigation | Milestone 4 |
+| JWT token stored in `flutter_secure_storage` | `AuthBloc` |
+| Route guard (redirect to login if unauthenticated) | `go_router` redirect logic |
+| `BlocBuilder` for reactive UI updates (cart badge) | Cart icon badge |

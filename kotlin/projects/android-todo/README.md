@@ -46,3 +46,17 @@
 - [ ] Dark/light theme toggle stored in `DataStore`
 - [ ] Undo delete with `Snackbar`
 - [ ] Filter tabs: All / Active / Done
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Room `@Entity` + auto-increment `@PrimaryKey` | `TodoItem` data class |
+| `@Dao` interface with `@Insert`, `@Update`, `@Delete`, `@Query` | `TodoDao` |
+| `@Database` abstract class wiring DAOs | `AppDatabase` |
+| KSP annotation processor for Room code generation | `build.gradle.kts` |
+| `ViewModel` + `viewModelScope.launch` coroutines | `TodoViewModel` |
+| `StateFlow` + `stateIn` for reactive Compose UI | `todos: StateFlow<List<TodoItem>>` |
+| Jetpack Compose `LazyColumn` + `SwipeToDismiss` | `TodoListScreen` |
+| Compose `NavHost` with typed routes | Milestone 4 |
+| `DataStore` for persisting user preferences (theme) | Milestone 5 |

@@ -36,3 +36,17 @@
 - TODO: Create `WeatherServiceTests.swift` in the test target.
 - TODO: Define `MockWeatherService` conforming to a `WeatherServiceProtocol`.
 - TODO: Test that `WeatherViewModel` exposes correct state on success and failure.
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| `actor` for thread-safe serialised network access | `WeatherService` |
+| `async throws` function signature | `fetchWeather(city:)` |
+| `Codable` JSON decoding into typed structs | `WeatherData` |
+| Custom error enum (`WeatherError`) | `WeatherService` |
+| `@State` + `@StateObject` in SwiftUI | `WeatherView` |
+| `CLLocationManager` + `ObservableObject` delegation | `LocationManager` |
+| Reverse geocoding for city name from coordinates | `LocationManager` |
+| `.alert` modifier bound to optional error string | `WeatherView` |
+| `WeatherServiceProtocol` + `MockWeatherService` for unit tests | `WeatherServiceTests.swift` |

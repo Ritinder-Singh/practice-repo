@@ -41,3 +41,18 @@ dotenv = "0.15"
 DATABASE_URL=postgres://... cargo run
 curl http://localhost:3000/products
 ```
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Axum `Router` with typed method routing | TODO 1 — product routes |
+| `tokio` async runtime (`#[tokio::main]`) | `src/main.rs` |
+| `serde::Deserialize` / `Serialize` on request/response structs | request/response types |
+| `sqlx::PgPool` connection pool with `connect_lazy` | TODO 3 |
+| `sqlx migrate` for schema migration management | TODO 3 |
+| `axum::middleware::from_fn` for auth middleware | TODO 2 |
+| JWT-based authentication | TODO 2 — `POST /auth/login` |
+| `tower-http` CORS + tracing layers | `Cargo.toml` |
+| Graceful shutdown with `tokio::signal::ctrl_c()` | TODO 3 |
+| Multi-stage Docker build (builder + runtime) | TODO 3 |

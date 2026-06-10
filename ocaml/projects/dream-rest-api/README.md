@@ -40,3 +40,16 @@ Create `dune-project` and `bin/main.ml`:
 - [ ] `find_user : (int, user, _) Caqti_request.t`
 - [ ] `insert_user : (string * string, unit, _) Caqti_request.t`
 - [ ] Use `Caqti_lwt_unix.connect` in Dream route handler
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| `Dream.run` + `Dream.router` server setup | `bin/main.ml` |
+| `Dream.param` for URL path parameter extraction | Milestone 2 |
+| `[@@deriving yojson]` ppx for automatic JSON serialization | `user` type |
+| `Dream.body` for reading and parsing request JSON | Milestone 2 |
+| `Dream.logger` middleware for request logging | Milestone 3 |
+| `Dream.error_handler` for centralised error responses | Milestone 3 |
+| Caqti typed query definitions (`Caqti_request.Infix`) | Milestone 4 |
+| `Caqti_lwt_unix.connect` for async DB access with Lwt | Milestone 4 |

@@ -23,3 +23,18 @@ npm install -D typescript @types/express @types/node @types/pg ts-node nodemon
 - Database migrations (node-pg-migrate)
 - Pino logging, OpenAPI spec (swagger-jsdoc)
 - Graceful shutdown on SIGTERM
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Express route handlers typed with TypeScript | `src/server.ts` |
+| Zod schema validation on request bodies | TODO 1 — `POST /products` |
+| Soft delete pattern (`deleted_at` column) | TODO 1 — `DELETE /products/:id` |
+| JWT auth middleware attaching `req.user` | TODO 2 — `requireAuth` |
+| `express-rate-limit` rate limiting middleware | TODO 2 |
+| `pg` Pool with connection string from environment | TODO 3 |
+| Database migrations with `node-pg-migrate` | TODO 3 |
+| Pino structured logging | TODO 3 |
+| Graceful shutdown on `SIGTERM` | TODO 3 |
+| OpenAPI spec generation with `swagger-jsdoc` | TODO 3 |

@@ -45,3 +45,18 @@ rails db:create db:migrate
 ### Milestone 6 — Admin Panel
 - [ ] `ActiveAdmin` or hand-built: list users, impersonate, manage accounts
 - [ ] Metrics dashboard: total users, MRR, churn rate
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Devise authentication modules (registerable, recoverable) | `User` model |
+| `enum` column for role-based access control | `role` (member / admin) |
+| `acts_as_tenant` multi-tenancy scoping | `Account` model, `ApplicationController` |
+| Subdomain routing for tenant resolution | `routes.rb` |
+| Pay gem for Stripe subscription billing | `Subscription` model |
+| Stripe webhook handling (`payment_intent.succeeded`) | Milestone 3 |
+| Turbo Streams real-time server-pushed updates | `Notification` model, `broadcasts_to` |
+| `<%= turbo_stream_from %>` subscription in layout | Milestone 4 |
+| Sidekiq background job processing with Redis | `WelcomeEmailJob`, `SubscriptionExpiryJob` |
+| Sidekiq Web admin dashboard with authentication | Milestone 5 |

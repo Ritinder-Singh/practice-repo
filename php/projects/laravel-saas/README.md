@@ -46,3 +46,17 @@ php artisan vendor:publish --tag=tenancy-config
 - [ ] Feature tests: `php artisan make:test SubscriptionTest`
 - [ ] Mock Stripe with `Http::fake()`
 - [ ] Database: `RefreshDatabase` trait
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Sanctum token-based API authentication | `AuthController`, `auth:sanctum` middleware |
+| Multi-tenancy with `stancl/tenancy` (database-per-tenant) | `Tenant` model, `InitializeTenancyByDomain` |
+| Subdomain routing for tenant isolation | `routes/web.php` |
+| Laravel Cashier Stripe subscription billing | `POST /subscribe`, `User implements Billable` |
+| Stripe webhook handling (`invoice.payment_failed`) | Milestone 3 |
+| Livewire reactive components (`wire:model`, `wire:click`) | `Dashboard`, `DataTable`, `BillingPortal` |
+| Redis-backed queue jobs (Horizon monitoring) | `SendWelcomeEmail`, `ProcessSubscriptionRenewal` |
+| Laravel scheduler (`$schedule->job()->daily()`) | Milestone 5 |
+| Feature testing with `Http::fake()` for Stripe mocking | Milestone 6 |

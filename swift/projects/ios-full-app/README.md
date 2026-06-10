@@ -46,3 +46,17 @@ View ←→ ViewModel ←→ Repository ←→ CoreData / Network
 ### Milestone 6 — Testing
 - [ ] Unit tests: ViewModel with MockNoteRepository
 - [ ] UI tests: XCUITest for critical flows (create/delete/pin)
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| CoreData `NSPersistentContainer` + entity modelling | `PersistenceController` |
+| Many-to-many CoreData relationship (Note ↔ Tag) | `.xcdatamodeld` model |
+| Protocol-based repository for testability | `NoteRepository` protocol |
+| `AnyPublisher` + Combine reactive pipeline | `CoreDataNoteRepository` |
+| `ObservableObject` + `@Published` for ViewModel state | `NoteListViewModel` |
+| `.debounce` Combine operator for search input | `$searchQuery` pipeline |
+| Dependency injection via `.environment()` modifier | `AppEnvironment` protocol |
+| `MockNoteRepository` for isolated unit tests | Milestone 6 |
+| `XCUITest` for critical UI flow testing | Milestone 6 |

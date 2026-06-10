@@ -48,3 +48,16 @@ docker-compose up -d  # kafka, zookeeper, postgres, eureka
 
 ### Docker Compose
 - [ ] `docker-compose.yml`: kafka (confluentinc/cp-kafka), zookeeper, postgres (x2), eureka, order-service, inventory-service
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Event-driven architecture (publish / subscribe) | `order-service` publishes → Kafka → `inventory-service` consumes |
+| Kafka topic producer and consumer (`@KafkaListener`) | `order-service`, `inventory-service` |
+| Saga pattern for distributed transactions | `order-service` compensating `OrderCancelledEvent` |
+| Service discovery with Eureka | `@EnableEurekaServer` + `@EnableEurekaClient` on each service |
+| API Gateway routing (Spring Cloud Gateway) | Gateway routes `/api/orders/**` → `order-service` |
+| JWT validation at the gateway layer | API Gateway filter |
+| Redis-backed rate limiting | API Gateway |
+| Docker Compose for multi-service orchestration | `docker-compose.yml` |

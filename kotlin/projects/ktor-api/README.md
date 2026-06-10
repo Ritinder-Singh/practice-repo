@@ -33,3 +33,16 @@ curl -s "https://start.ktor.io/..." -o ktor-api.zip
 - [ ] Add `ktor-server-auth-jwt` dependency
 - [ ] `install(Authentication) { jwt("auth-jwt") { ... } }`
 - [ ] Protect mutation routes with `authenticate("auth-jwt") { ... }`
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| `embeddedServer(Netty)` server bootstrap | `src/Application.kt` |
+| Ktor routing DSL (`route`, `get`, `post`, `put`, `delete`) | `src/routes/UserRoutes.kt` |
+| `ContentNegotiation` plugin with `kotlinx.json` serializer | `src/Application.kt` |
+| `StatusPages` plugin for centralised error responses | Milestone 1 |
+| `CallLogging` plugin for request logging | Milestone 1 |
+| Exposed ORM `IntIdTable` + DAO pattern | Milestone 3 — `UserRepository` |
+| JWT authentication plugin (`ktor-server-auth-jwt`) | Milestone 4 |
+| `authenticate("auth-jwt")` route protection block | Milestone 4 |

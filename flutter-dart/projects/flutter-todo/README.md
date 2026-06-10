@@ -47,3 +47,17 @@ flutter pub get
 - [ ] Reorder list: `ReorderableListView`
 - [ ] Theme toggle (light/dark) with `ThemeMode` in root provider
 - [ ] App badge count (iOS/Android) showing active todos
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Riverpod `StateNotifierProvider` | `providers/todo_provider.dart` — `TodoNotifier` |
+| Derived / computed provider (`filteredTodosProvider`) | `providers/todo_provider.dart` |
+| Immutable state model with `copyWith` | `TodoItem` class |
+| JSON serialization (`fromJson` / `toJson`) | `TodoItem` class |
+| `SharedPreferences` for local persistence | Milestone 3 |
+| `ref.listen` side-effect trigger on state change | Milestone 3 |
+| `Dismissible` widget for swipe-to-delete | `screens/todo_screen.dart` |
+| `ReorderableListView` for drag-and-drop ordering | Milestone 5 |
+| `ThemeMode` provider for light / dark toggle | Milestone 5 |

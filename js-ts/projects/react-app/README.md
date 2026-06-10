@@ -30,3 +30,18 @@ cd react-app && npm install
 ```
 src/components/ | src/hooks/ | src/pages/ | src/store/ | src/types/ | src/api/
 ```
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| TypeScript `interface` for component props | `ProductCardProps` in `components/` |
+| Conditional rendering based on data state | "Out of Stock" badge when `stock === 0` |
+| `useReducer` for multi-action state | Cart reducer |
+| Discriminated union `CartAction` types | `store/cartReducer.ts` |
+| Custom hook + `Context` for global cart state | `useCart` / `CartContext` |
+| `useMemo` for derived computed values | cart total, item count |
+| TanStack Query for server state and caching | TODO 3 |
+| `Suspense` + Error boundaries | TODO 3 |
+| `React.memo` + `useCallback` performance optimisation | TODO 3 |
+| `React.lazy` + `Suspense` route-level code splitting | TODO 3 |

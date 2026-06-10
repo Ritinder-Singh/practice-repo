@@ -31,3 +31,18 @@ pip install fastapi uvicorn sqlalchemy alembic psycopg2-binary pydantic
 uvicorn main:app --reload
 # Docs at: http://localhost:8000/docs
 ```
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Pydantic schema validation on request bodies | `schemas.py` |
+| Pagination with `skip` + `limit` query parameters | TODO 1 — `GET /products` |
+| Soft delete pattern (`deleted_at` timestamp column) | TODO 1 — `DELETE /products/:id` |
+| Alembic database migrations (`alembic init`, `upgrade head`) | TODO 2 |
+| JWT authentication with `python-jose` + `passlib` | TODO 2 |
+| `Depends(get_current_user)` for route protection | TODO 2 |
+| `TestClient` with in-memory SQLite for isolated tests | TODO 3 |
+| FastAPI `BackgroundTasks` for async side-effects | TODO 3 |
+| Multi-stage Docker image (`python:3.12-slim`) | TODO 3 |
+| OpenAPI schema `examples` on Pydantic models | TODO 3 |

@@ -149,3 +149,20 @@ curl -s -X POST http://localhost:8080/api/users \
 | `spring-boot-starter-validation` | Bean Validation (`@NotBlank`, `@Email`) |
 | `h2` | In-memory database — zero setup |
 | `lombok` | Eliminates boilerplate (`@Getter`, `@Setter`, `@RequiredArgsConstructor`) |
+
+---
+
+## Key Concepts Demonstrated
+
+| Concept | Where |
+|---------|-------|
+| Three-layer architecture (Controller → Service → Repository) | `controller/UserController.java` → `service/UserService.java` → `repository/UserRepository.java` |
+| Spring Data JPA derived queries | `repository/UserRepository.java` |
+| `@Transactional` and automatic rollback | `service/UserService.java` |
+| DTO pattern (decoupling API contract from DB schema) | `dto/UserDto.java`, `dto/CreateUserRequest.java`, `dto/UpdateUserRequest.java` |
+| Bean Validation (`@NotBlank`, `@Email`) on request DTOs | `dto/CreateUserRequest.java` |
+| Constructor injection via Lombok `@RequiredArgsConstructor` | `service/UserService.java`, `controller/UserController.java` |
+| Centralised exception handling with `@RestControllerAdvice` | `exception/GlobalExceptionHandler.java` |
+| `@PrePersist` lifecycle hook for auto-timestamps | `model/User.java` |
+| H2 in-memory database (zero-setup dev DB) | `src/main/resources/application.properties` |
+| RFC 9457 `ProblemDetail` structured error responses | `exception/GlobalExceptionHandler.java` |
